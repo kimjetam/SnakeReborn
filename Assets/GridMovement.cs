@@ -1,39 +1,51 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GridMovement : MonoBehaviour
 {
     public float moveSpeed = 5f; // Speed of movement
     public float gridSize = 1f; // Distance between grid points
     private Vector3 moveDirection = Vector3.forward; // Default forward direction
+    private Vector3 rotationDirection = Vector3.forward; // Default forward direction
+    private float rotationSpeed = 5f;
     private bool isMoving = false; // To prevent mid-movement turning
-    private bool keyPressed = false; // To prevent mid-movement turning
+    private bool isTurning = false; // To prevent mid-movement turning
     public bool isPaused = false;
 
     void Update()
     {
-        if (!keyPressed && Input.GetKeyDown(KeyCode.LeftArrow))
+        if (!isTurning && Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            Debug.Log("Left Arrow Pressed");
-            moveDirection = Quaternion.Euler(0, -90, 0) * moveDirection;
-            keyPressed = true;
+            var rotationAngle = -90f;
+            moveDirection = Quaternion.Euler(0, rotationAngle, 0) * moveDirection;
+            isTurning = true;
         }
-        else if (!keyPressed && Input.GetKeyDown(KeyCode.RightArrow))
+        else if (!isTurning && Input.GetKeyDown(KeyCode.RightArrow))
         {
-            Debug.Log("Right Arrow Pressed");
-            moveDirection = Quaternion.Euler(0, 90, 0) * moveDirection;
-            keyPressed = true;
+            var rotationAngle = 90f;
+            moveDirection = Quaternion.Euler(0, rotationAngle, 0) * moveDirection;
+            isTurning = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             isPaused = !isPaused;
             Time.timeScale = isPaused ? 0 : 1;
-            Debug.Log(moveDirection);
         }
 
-        if(!isMoving)
+        if (rotationDirection != Vector3.zero)
         {
+            //create the rotation we need to be in to look at the target
+            var lookRotation = Quaternion.LookRotation(rotationDirection);
+
+            // Smoothly rotate towards the target point.
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+        }
+
+        if (!isMoving)
+        {
+            rotationDirection = moveDirection;
             // Move forward on the grid
             StartCoroutine(Move());
         }
@@ -48,14 +60,17 @@ public class GridMovement : MonoBehaviour
         float elapsedTime = 0f;
         while (elapsedTime < gridSize / moveSpeed)
         {
-            transform.position = Vector3.Lerp(startPosition, targetPosition, (elapsedTime * moveSpeed) / gridSize);
+            float t = (elapsedTime * moveSpeed) / gridSize;
+            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
+        //rotationAngle = 0;
         transform.position = targetPosition; // Snap to exact position
         isMoving = false;
-        keyPressed = false;
+        isTurning = false;
         yield return null;
     }
 }
