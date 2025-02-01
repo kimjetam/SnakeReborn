@@ -392,8 +392,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c51f4c3c8f16b1f4bb4e6103ed3e6338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followObject: {fileID: 7486177}
-  speed: 1
+  target: {fileID: 7486182}
+  followSpeed: 5
+  rotationSpeed: 5
+  offset: {x: 0, y: 3, z: -4}
+  rotationOffset: {x: 30, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

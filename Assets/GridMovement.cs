@@ -43,6 +43,11 @@ public class GridMovement : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
         }
 
+        
+    }
+
+    private void FixedUpdate()
+    {
         if (!isMoving)
         {
             rotationDirection = moveDirection;
