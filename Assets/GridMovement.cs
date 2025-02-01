@@ -13,6 +13,7 @@ public class GridMovement : MonoBehaviour
     private bool isTurning = false; // To prevent mid-movement turning
     public bool isPaused = false;
 
+
     void Update()
     {
         if (!isTurning && Input.GetKeyDown(KeyCode.LeftArrow))
