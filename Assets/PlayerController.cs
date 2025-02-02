@@ -42,7 +42,11 @@ public class PlayerController : MonoBehaviour
         }
         else if (!isTurning && Input.GetKeyDown(KeyCode.DownArrow))
         {
-            GetComponentInParent<SnakeController>().moveSpeed--;
+            var moveSpeed = GetComponentInParent<SnakeController>().moveSpeed;
+            if(moveSpeed > 1)
+            {
+                GetComponentInParent<SnakeController>().moveSpeed--;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
