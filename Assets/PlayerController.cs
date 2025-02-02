@@ -2,16 +2,24 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class GridMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f; // Speed of movement
-    public float gridSize = 1f; // Distance between grid points
     private Vector3 moveDirection = Vector3.forward; // Default forward direction
     private Vector3 rotationDirection = Vector3.forward; // Default forward direction
     private float rotationSpeed = 5f;
     private bool isMoving = false; // To prevent mid-movement turning
     private bool isTurning = false; // To prevent mid-movement turning
     public bool isPaused = false;
+    private SnakeController _snakeController = null;
+
+    private void Start()
+    {
+        var snakeController = GetComponentInParent<SnakeController>();
+        if (snakeController != null)
+        {
+            _snakeController = snakeController;
+        }
+    }
 
 
     void Update()
@@ -44,11 +52,6 @@ public class GridMovement : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
         }
 
-        
-    }
-
-    private void FixedUpdate()
-    {
         if (!isMoving)
         {
             rotationDirection = moveDirection;
@@ -57,24 +60,38 @@ public class GridMovement : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        
+    }
+
     private IEnumerator Move()
     {
         isMoving = true;
+
+        var moveSpeed = GetComponentInParent<SnakeController>().moveSpeed;
+        var gridSize = GetComponentInParent<SnakeController>().gridSize;
+
         Vector3 startPosition = transform.position;
         Vector3 targetPosition = startPosition + moveDirection * gridSize;
 
         float elapsedTime = 0f;
         while (elapsedTime < gridSize / moveSpeed)
         {
-            float t = (elapsedTime * moveSpeed) / gridSize;
+            float t = elapsedTime * moveSpeed / gridSize;
             transform.position = Vector3.Lerp(startPosition, targetPosition, t);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        //rotationAngle = 0;
         transform.position = targetPosition; // Snap to exact position
+
+        if (_snakeController != null)
+        {
+
+        }
+
         isMoving = false;
         isTurning = false;
         yield return null;
