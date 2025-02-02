@@ -36,6 +36,14 @@ public class PlayerController : MonoBehaviour
             moveDirection = Quaternion.Euler(0, rotationAngle, 0) * moveDirection;
             isTurning = true;
         }
+        else if (!isTurning && Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            GetComponentInParent<SnakeController>().moveSpeed++;
+        }
+        else if (!isTurning && Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            GetComponentInParent<SnakeController>().moveSpeed--;
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
