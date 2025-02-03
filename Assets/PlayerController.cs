@@ -24,28 +24,28 @@ public class PlayerController : MonoBehaviour
             _snakeController = snakeController;
         }
 
-        smallSpheres = new GameObject[4];
+        //smallSpheres = new GameObject[4];
 
-        // Define the offsets (adjust based on the size of your main object)
-        sphereOffsets[0] = new Vector3(0.25f, 0, 0);   // Right
-        sphereOffsets[1] = new Vector3(-0.25f, 0, 0);  // Left
-        sphereOffsets[2] = new Vector3(0, 0.25f, 0);   // Up
-        sphereOffsets[3] = new Vector3(0, -0.25f, 0);  // Down
+        //// Define the offsets (adjust based on the size of your main object)
+        //sphereOffsets[0] = new Vector3(0.25f, 0, 0);   // Right
+        //sphereOffsets[1] = new Vector3(-0.25f, 0, 0);  // Left
+        //sphereOffsets[2] = new Vector3(0, 0.25f, 0);   // Up
+        //sphereOffsets[3] = new Vector3(0, -0.25f, 0);  // Down
 
-        for (int i = 0; i < 4; i++)
-        {
-            // Create sphere dynamically
-            smallSpheres[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //for (int i = 0; i < 4; i++)
+        //{
+        //    // Create sphere dynamically
+        //    smallSpheres[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
-            // Position it relative to the main object
-            smallSpheres[i].transform.position = transform.position + sphereOffsets[i];
+        //    // Position it relative to the main object
+        //    smallSpheres[i].transform.position = transform.position + sphereOffsets[i];
 
-            // Make it a child of the main object
-            smallSpheres[i].transform.SetParent(transform);
+        //    // Make it a child of the main object
+        //    smallSpheres[i].transform.SetParent(transform);
 
-            // Scale down the spheres to be small
-            smallSpheres[i].transform.localScale = Vector3.one * 0.05f;
-        }
+        //    // Scale down the spheres to be small
+        //    smallSpheres[i].transform.localScale = Vector3.one * 0.05f;
+        //}
     }
 
 
