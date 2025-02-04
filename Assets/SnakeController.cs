@@ -116,17 +116,10 @@ public class SnakeController : MonoBehaviour
         {
             var segment = snakeSegments[i].GetComponent<SnakeSegment>();
             segment.startPosition = segment.transform.position;
-            if(i == 0)
-            {
-                segment.targetPosition = headSegment.startPosition;
-                segment.moveDirection = headSegment.moveDirection;
-            }
-            else
-            {
-                var prevSegment = snakeSegments[i - 1].GetComponent<SnakeSegment>();
-                segment.targetPosition = prevSegment.transform.position;
-                segment.moveDirection = prevSegment.moveDirection;
-            }
+
+            var prevSegment = i == 0 ? headSegment : snakeSegments[i - 1].GetComponent<SnakeSegment>();
+            segment.targetPosition = prevSegment.transform.position;
+            segment.moveDirection = prevSegment.moveDirection;
         }
 
         float elapsedTime = 0f;
