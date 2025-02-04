@@ -9,6 +9,12 @@ public class SnakeSegment : MonoBehaviour
     public Vector3 upcommingMoveDirection;
     public Vector3 startPosition;
     public Vector3 targetPosition;
+    public bool isTurning = false;
+    public int turnStep = 0;
+    public Vector3 turnCenterPosition;
+    public Vector3 turnStartPosition;
+    public Vector3 turnTargetPosition;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
