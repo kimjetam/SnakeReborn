@@ -10,7 +10,7 @@ public class SnakeSegment : MonoBehaviour
     public Vector3 startPosition;
     public Vector3 targetPosition;
     public bool isTurning = false;
-    public int turnStep = 0;
+    public bool halfTurnDone = false;
     public Vector3 turnCenterPosition;
     public Vector3 turnStartPosition;
     public Vector3 turnTargetPosition;
