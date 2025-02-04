@@ -4969,8 +4969,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDirection: {x: 0, y: 0, z: 1}
+  upcommingMoveDirection: {x: 0, y: 0, z: 0}
   startPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  isTurning: 0
+  halfTurnDone: 0
+  turnCenterPosition: {x: 0, y: 0, z: 0}
+  turnStartPosition: {x: 0, y: 0, z: 0}
+  turnTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &206134641
 GameObject:
   m_ObjectHideFlags: 0
@@ -15362,8 +15368,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDirection: {x: 0, y: 0, z: 1}
+  upcommingMoveDirection: {x: 0, y: 0, z: 0}
   startPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  isTurning: 0
+  halfTurnDone: 0
+  turnCenterPosition: {x: 0, y: 0, z: 0}
+  turnStartPosition: {x: 0, y: 0, z: 0}
+  turnTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &569207207
 GameObject:
   m_ObjectHideFlags: 0
@@ -15969,8 +15981,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDirection: {x: 0, y: 0, z: 0}
+  upcommingMoveDirection: {x: 0, y: 0, z: 0}
   startPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  isTurning: 0
+  halfTurnDone: 0
+  turnCenterPosition: {x: 0, y: 0, z: 0}
+  turnStartPosition: {x: 0, y: 0, z: 0}
+  turnTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &604501281
 GameObject:
   m_ObjectHideFlags: 0
@@ -24718,8 +24736,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDirection: {x: 0, y: 0, z: 1}
+  upcommingMoveDirection: {x: 0, y: 0, z: 0}
   startPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  isTurning: 0
+  halfTurnDone: 0
+  turnCenterPosition: {x: 0, y: 0, z: 0}
+  turnStartPosition: {x: 0, y: 0, z: 0}
+  turnTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &1026076922
 GameObject:
   m_ObjectHideFlags: 0
@@ -38836,8 +38860,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDirection: {x: 0, y: 0, z: 1}
+  upcommingMoveDirection: {x: 0, y: 0, z: 0}
   startPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  isTurning: 0
+  halfTurnDone: 0
+  turnCenterPosition: {x: 0, y: 0, z: 0}
+  turnStartPosition: {x: 0, y: 0, z: 0}
+  turnTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &1660423945
 GameObject:
   m_ObjectHideFlags: 0
@@ -41608,7 +41638,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPaused: 0
-  moveSpeed: 5
+  moveSpeed: 2
   gridSize: 0.5
   head: {fileID: 604408660}
   snakeSegments:
@@ -41619,6 +41649,7 @@ MonoBehaviour:
   - {fileID: 565842013}
   - {fileID: 1649036457}
   - {fileID: 2059921687}
+  showPath: 0
 --- !u!4 &1772568060
 Transform:
   m_ObjectHideFlags: 0
@@ -41628,7 +41659,7 @@ Transform:
   m_GameObject: {fileID: 1772568058}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.46, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -47620,8 +47651,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDirection: {x: 0, y: 0, z: 1}
+  upcommingMoveDirection: {x: 0, y: 0, z: 0}
   startPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  isTurning: 0
+  halfTurnDone: 0
+  turnCenterPosition: {x: 0, y: 0, z: 0}
+  turnStartPosition: {x: 0, y: 0, z: 0}
+  turnTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &2049066640
 GameObject:
   m_ObjectHideFlags: 0
@@ -48321,8 +48358,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDirection: {x: 0, y: 0, z: 1}
+  upcommingMoveDirection: {x: 0, y: 0, z: 0}
   startPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  isTurning: 0
+  halfTurnDone: 0
+  turnCenterPosition: {x: 0, y: 0, z: 0}
+  turnStartPosition: {x: 0, y: 0, z: 0}
+  turnTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &2062950294
 GameObject:
   m_ObjectHideFlags: 0
@@ -49510,8 +49553,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDirection: {x: 0, y: 0, z: 1}
+  upcommingMoveDirection: {x: 0, y: 0, z: 0}
   startPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  isTurning: 0
+  halfTurnDone: 0
+  turnCenterPosition: {x: 0, y: 0, z: 0}
+  turnStartPosition: {x: 0, y: 0, z: 0}
+  turnTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &2110371277
 GameObject:
   m_ObjectHideFlags: 0
