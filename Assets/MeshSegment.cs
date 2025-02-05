@@ -9,18 +9,22 @@ public class MeshSegment : MonoBehaviour
     public Transform vertex3;
     public Transform vertex4;
 
-    private float size = 0.3f;
+    private float size = 0.15f;
 
-    public bool showVertices = false;
+    private bool showDebugVertices = false;
 
     void Start()
     {
+        size = gameObject.GetComponentInParent<SnakeController>().snakeWidthRadius;
+
         CreateVertex(ref vertex1, "Vertex1", new Vector3(size, 0, 0));
         CreateVertex(ref vertex2, "Vertex2", new Vector3(-size, 0, 0));
         CreateVertex(ref vertex3, "Vertex3", new Vector3(0, size, 0));
         CreateVertex(ref vertex4, "Vertex4", new Vector3(0, -size, 0));
 
-        if (showVertices)
+        showDebugVertices = gameObject.GetComponentInParent<SnakeController>().showDebugMeshVerticles;
+
+        if (showDebugVertices)
         {
             CreateDebugSphere(vertex1);
             CreateDebugSphere(vertex2);

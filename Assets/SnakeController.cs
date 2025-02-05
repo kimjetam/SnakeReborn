@@ -11,6 +11,7 @@ public class SnakeController : MonoBehaviour
 
     public float moveSpeed = 5f;
     public float gridSize = 1f;
+    public float snakeWidthRadius = 0.15f;
 
     public GameObject head;
     public List<GameObject> snakeSegments;
@@ -18,7 +19,9 @@ public class SnakeController : MonoBehaviour
     private SnakeSegment headSegment;
     private LineRenderer lineRenderer;
     private List<Vector3> lineRendererPoints = new List<Vector3>();
-    public bool showPath = false;
+    public bool showDebugPath = false;
+    public bool showDebugSegments = false;
+    public bool showDebugMeshVerticles = false;
 
     void Start()
     {
@@ -26,9 +29,12 @@ public class SnakeController : MonoBehaviour
         headSegment.moveDirection = Vector3.forward;
         headSegment.upcommingMoveDirection = Vector3.forward;
 
-        //SetupVisuals();
+        if(showDebugSegments )
+        {
+            SetupDebugVisuals();
+        }
 
-        if (showPath)
+        if (showDebugPath)
         {
             lineRenderer = gameObject.AddComponent<LineRenderer>();
             lineRenderer.startWidth = lineRenderer.endWidth = 0.1f;
@@ -49,7 +55,7 @@ public class SnakeController : MonoBehaviour
         if (!isMoving) StartCoroutine(Move());
     }
 
-    private void SetupVisuals()
+    private void SetupDebugVisuals()
     {
         CreateSegmentVisual(head);
         foreach (var segment in snakeSegments) CreateSegmentVisual(segment);
@@ -175,7 +181,7 @@ public class SnakeController : MonoBehaviour
             }
             segment.transform.position = newPosition;
 
-            if (showPath && i == 0)
+            if (showDebugPath && i == 0)
             {
                 lineRendererPoints.Add(segment.transform.position);
                 lineRenderer.positionCount = lineRendererPoints.Count;
@@ -186,7 +192,7 @@ public class SnakeController : MonoBehaviour
 
     private void SnapToGrid()
     {
-        head.transform.position = headSegment.targetPosition;
+        head.transform.position = RoundToHalf(headSegment.targetPosition);
 
         for (int i = 0; i < snakeSegments.Count; i++)
         {
