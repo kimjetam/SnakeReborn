@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SnakeController : MonoBehaviour
@@ -25,7 +26,7 @@ public class SnakeController : MonoBehaviour
         headSegment.moveDirection = Vector3.forward;
         headSegment.upcommingMoveDirection = Vector3.forward;
 
-        SetupVisuals();
+        //SetupVisuals();
 
         if (showPath)
         {
@@ -163,14 +164,16 @@ public class SnakeController : MonoBehaviour
         {
             var segment = snakeSegments[i].GetComponent<SnakeSegment>();
 
-            if (segment.isTurning)
+            var newPosition = segment.isTurning 
+                ? segment.turnCenterPosition + Vector3.Slerp(segment.turnStartPosition - segment.turnCenterPosition, segment.turnTargetPosition - segment.turnCenterPosition, t)
+                : Vector3.Lerp(segment.startPosition, segment.targetPosition, t);
+
+            Vector3 rotationDirection = (newPosition - segment.transform.position).normalized;
+            if (rotationDirection != Vector3.zero)
             {
-                segment.transform.position = segment.turnCenterPosition + Vector3.Slerp(segment.turnStartPosition - segment.turnCenterPosition, segment.turnTargetPosition - segment.turnCenterPosition, t);
+                segment.transform.rotation = Quaternion.LookRotation(rotationDirection);
             }
-            else
-            {
-                segment.transform.position = Vector3.Lerp(segment.startPosition, segment.targetPosition, t);
-            }
+            segment.transform.position = newPosition;
 
             if (showPath && i == 0)
             {
