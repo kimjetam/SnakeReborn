@@ -4990,10 +4990,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08abd2aab2e2f0e4f9de44911d1bdbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vertex1: {fileID: 0}
-  vertex2: {fileID: 0}
-  vertex3: {fileID: 0}
-  vertex4: {fileID: 0}
+  vertex1: {x: 0, y: 0, z: 0}
+  vertex2: {x: 0, y: 0, z: 0}
+  vertex3: {x: 0, y: 0, z: 0}
+  vertex4: {x: 0, y: 0, z: 0}
+  radiusX: 0.15
+  radiusY: 0.15
+  overrideRadiusValues: 0
 --- !u!1 &206134641
 GameObject:
   m_ObjectHideFlags: 0
@@ -15406,10 +15409,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08abd2aab2e2f0e4f9de44911d1bdbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vertex1: {fileID: 0}
-  vertex2: {fileID: 0}
-  vertex3: {fileID: 0}
-  vertex4: {fileID: 0}
+  vertex1: {x: 0, y: 0, z: 0}
+  vertex2: {x: 0, y: 0, z: 0}
+  vertex3: {x: 0, y: 0, z: 0}
+  vertex4: {x: 0, y: 0, z: 0}
+  radiusX: 0.15
+  radiusY: 0.15
+  overrideRadiusValues: 0
 --- !u!1 &569207207
 GameObject:
   m_ObjectHideFlags: 0
@@ -16036,10 +16042,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08abd2aab2e2f0e4f9de44911d1bdbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vertex1: {fileID: 0}
-  vertex2: {fileID: 0}
-  vertex3: {fileID: 0}
-  vertex4: {fileID: 0}
+  vertex1: {x: 0, y: 0, z: 0}
+  vertex2: {x: 0, y: 0, z: 0}
+  vertex3: {x: 0, y: 0, z: 0}
+  vertex4: {x: 0, y: 0, z: 0}
+  radiusX: 0.15
+  radiusY: 0.15
+  overrideRadiusValues: 0
 --- !u!1 &604501281
 GameObject:
   m_ObjectHideFlags: 0
@@ -24808,10 +24817,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08abd2aab2e2f0e4f9de44911d1bdbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vertex1: {fileID: 0}
-  vertex2: {fileID: 0}
-  vertex3: {fileID: 0}
-  vertex4: {fileID: 0}
+  vertex1: {x: 0, y: 0, z: 0}
+  vertex2: {x: 0, y: 0, z: 0}
+  vertex3: {x: 0, y: 0, z: 0}
+  vertex4: {x: 0, y: 0, z: 0}
+  radiusX: 0.15
+  radiusY: 0.15
+  overrideRadiusValues: 0
 --- !u!1 &1026076922
 GameObject:
   m_ObjectHideFlags: 0
@@ -38949,10 +38961,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08abd2aab2e2f0e4f9de44911d1bdbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vertex1: {fileID: 0}
-  vertex2: {fileID: 0}
-  vertex3: {fileID: 0}
-  vertex4: {fileID: 0}
+  vertex1: {x: 0, y: 0, z: 0}
+  vertex2: {x: 0, y: 0, z: 0}
+  vertex3: {x: 0, y: 0, z: 0}
+  vertex4: {x: 0, y: 0, z: 0}
+  radiusX: 0.15
+  radiusY: 0.15
+  overrideRadiusValues: 0
 --- !u!1 &1660423945
 GameObject:
   m_ObjectHideFlags: 0
@@ -47829,10 +47844,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08abd2aab2e2f0e4f9de44911d1bdbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vertex1: {fileID: 0}
-  vertex2: {fileID: 0}
-  vertex3: {fileID: 0}
-  vertex4: {fileID: 0}
+  vertex1: {x: 0, y: 0, z: 0}
+  vertex2: {x: 0, y: 0, z: 0}
+  vertex3: {x: 0, y: 0, z: 0}
+  vertex4: {x: 0, y: 0, z: 0}
+  radiusX: 0.15
+  radiusY: 0.15
+  overrideRadiusValues: 0
 --- !u!1 &2049066640
 GameObject:
   m_ObjectHideFlags: 0
@@ -48553,10 +48571,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08abd2aab2e2f0e4f9de44911d1bdbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vertex1: {fileID: 0}
-  vertex2: {fileID: 0}
-  vertex3: {fileID: 0}
-  vertex4: {fileID: 0}
+  vertex1: {x: 0, y: 0, z: 0}
+  vertex2: {x: 0, y: 0, z: 0}
+  vertex3: {x: 0, y: 0, z: 0}
+  vertex4: {x: 0, y: 0, z: 0}
+  radiusX: 0.15
+  radiusY: 0.15
+  overrideRadiusValues: 0
 --- !u!1 &2062950294
 GameObject:
   m_ObjectHideFlags: 0
@@ -49765,10 +49786,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08abd2aab2e2f0e4f9de44911d1bdbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vertex1: {fileID: 0}
-  vertex2: {fileID: 0}
-  vertex3: {fileID: 0}
-  vertex4: {fileID: 0}
+  vertex1: {x: 0, y: 0, z: 0}
+  vertex2: {x: 0, y: 0, z: 0}
+  vertex3: {x: 0, y: 0, z: 0}
+  vertex4: {x: 0, y: 0, z: 0}
+  radiusX: 0.15
+  radiusY: 0.15
+  overrideRadiusValues: 0
 --- !u!1 &2110371277
 GameObject:
   m_ObjectHideFlags: 0

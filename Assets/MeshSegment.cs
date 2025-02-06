@@ -1,4 +1,3 @@
-using System.Drawing;
 using UnityEngine;
 
 public class MeshSegment : MonoBehaviour
@@ -9,13 +8,18 @@ public class MeshSegment : MonoBehaviour
     public Vector3 vertex3;
     public Vector3 vertex4;
 
-    private float radiusX = 0.15f;
-    private float radiusY = 0.15f;
+    public float radiusX = 0.15f;
+    public float radiusY = 0.15f;
+    public bool overrideRadiusValues = false;
+
     private bool showDebugVertices = false;
 
     void Start()
     {
-        radiusX = radiusY = gameObject.GetComponentInParent<SnakeController>().snakeWidthRadius;
+        if(!overrideRadiusValues)
+        {
+            radiusX = radiusY = gameObject.GetComponentInParent<SnakeController>().snakeWidthRadius;
+        }
         showDebugVertices = gameObject.GetComponentInParent<SnakeController>().showDebugMeshVerticles;
     }
 
