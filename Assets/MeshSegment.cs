@@ -3,9 +3,13 @@ using UnityEngine;
 public class MeshSegment : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [HideInInspector]
     public Vector3 vertex1;
+    [HideInInspector]
     public Vector3 vertex2;
+    [HideInInspector]
     public Vector3 vertex3;
+    [HideInInspector]
     public Vector3 vertex4;
 
     public float radiusX = 0.15f;
