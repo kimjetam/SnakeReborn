@@ -17,6 +17,10 @@ public class SnakeController : MonoBehaviour
     public GameObject headFront;
     public GameObject headMiddle;
     public List<GameObject> snakeSegments;
+    public GameObject tail;
+
+    public GameObject eye1;
+    public GameObject eye2;
 
     private SnakeSegment headSegment;
     private LineRenderer lineRenderer;
@@ -122,6 +126,8 @@ public class SnakeController : MonoBehaviour
             head.transform.position = newPosition;
             headFront.transform.position = newPosition + headFront.transform.forward * 0.9f;
             headMiddle.transform.position = newPosition + headMiddle.transform.forward * 0.35f;
+            eye1.transform.position = headMiddle.transform.position + headFront.transform.forward * 0.1f - headFront.transform.right * 0.2f + headFront.transform.up * 0.5f;
+            eye2.transform.position = headMiddle.transform.position + headFront.transform.forward * 0.1f + headFront.transform.right * 0.2f + headFront.transform.up * 0.5f;
 
             MoveSegments(t);
 
@@ -188,6 +194,12 @@ public class SnakeController : MonoBehaviour
             }
             segment.transform.position = newPosition;
 
+            if(i == snakeSegments.Count - 1)
+            {
+                tail.transform.position = segment.transform.position - segment.transform.forward;
+                tail.transform.rotation = segment.transform.rotation;
+            }
+
             if (showDebugPath && i == 0)
             {
                 lineRendererPoints.Add(segment.transform.position);
@@ -200,8 +212,8 @@ public class SnakeController : MonoBehaviour
     private void SnapToGrid()
     {
         head.transform.position = RoundToHalf(headSegment.targetPosition);
-        headFront.transform.position = RoundToHalf(headSegment.targetPosition + headSegment.moveDirection * 0.9f);
-        headMiddle.transform.position = RoundToHalf(headSegment.targetPosition + headSegment.moveDirection * 0.35f);
+        headFront.transform.position = headSegment.targetPosition + headSegment.moveDirection * 0.9f;
+        headMiddle.transform.position = headSegment.targetPosition + headSegment.moveDirection * 0.35f;
 
         for (int i = 0; i < snakeSegments.Count; i++)
         {
@@ -223,6 +235,12 @@ public class SnakeController : MonoBehaviour
             else
             {
                 segment.transform.position = RoundToHalf(segment.targetPosition);
+            }
+
+            if (i == snakeSegments.Count - 1)
+            {
+                tail.transform.position = segment.transform.position - segment.transform.forward;
+                tail.transform.rotation = segment.transform.rotation;
             }
         }
     }
