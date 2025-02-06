@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SnakeController : MonoBehaviour
@@ -13,6 +14,8 @@ public class SnakeController : MonoBehaviour
     public float snakeWidthRadius = 0.15f;
 
     public GameObject head;
+    public GameObject headFront;
+    public GameObject headMiddle;
     public List<GameObject> snakeSegments;
 
     private SnakeSegment headSegment;
@@ -93,7 +96,7 @@ public class SnakeController : MonoBehaviour
     {
         if (headSegment.moveDirection == Vector3.zero) return;
         var targetRotation = Quaternion.LookRotation(headSegment.moveDirection);
-        head.transform.rotation = Quaternion.Slerp(head.transform.rotation, targetRotation, Time.deltaTime * 5f);
+        headFront.transform.rotation = headMiddle.transform.rotation =  head.transform.rotation = Quaternion.Slerp(head.transform.rotation, targetRotation, Time.deltaTime * 5f);
     }
 
     private IEnumerator Move()
@@ -114,7 +117,12 @@ public class SnakeController : MonoBehaviour
         while (elapsedTime < moveDuration)
         {
             float t = elapsedTime / moveDuration;
-            head.transform.position = Vector3.Lerp(headSegment.startPosition, headSegment.targetPosition, t);
+            var newPosition = Vector3.Lerp(headSegment.startPosition, headSegment.targetPosition, t);
+            var direction = (newPosition - head.transform.position).normalized;
+            head.transform.position = newPosition;
+            headFront.transform.position = newPosition + headFront.transform.forward * 0.9f;
+            headMiddle.transform.position = newPosition + headMiddle.transform.forward * 0.35f;
+
             MoveSegments(t);
 
             elapsedTime += Time.deltaTime;
@@ -192,6 +200,8 @@ public class SnakeController : MonoBehaviour
     private void SnapToGrid()
     {
         head.transform.position = RoundToHalf(headSegment.targetPosition);
+        headFront.transform.position = RoundToHalf(headSegment.targetPosition + headSegment.moveDirection * 0.9f);
+        headMiddle.transform.position = RoundToHalf(headSegment.targetPosition + headSegment.moveDirection * 0.35f);
 
         for (int i = 0; i < snakeSegments.Count; i++)
         {

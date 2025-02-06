@@ -28,10 +28,12 @@ public class BodyMeshRenderer : MonoBehaviour
     {
         var snakeController = GetComponentInParent<SnakeController>();
         var headMeshSegment = snakeController.head.GetComponent<MeshSegment>();
+        var headFrontMeshSegment = snakeController.headFront.GetComponent<MeshSegment>();
+        var headMiddleMeshSegment = snakeController.headMiddle.GetComponent<MeshSegment>();
         var bodyMeshSegments = snakeController.snakeSegments.Select(x => x.GetComponent<MeshSegment>());
 
         meshSegments = new List<MeshSegment> {
-            headMeshSegment
+            headFrontMeshSegment, headMiddleMeshSegment, headMeshSegment
         }.Concat(bodyMeshSegments).ToList();
     }
 
