@@ -4,54 +4,62 @@ using UnityEngine;
 public class MeshSegment : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public Transform vertex1;
-    public Transform vertex2;
-    public Transform vertex3;
-    public Transform vertex4;
+    public Vector3 vertex1;
+    public Vector3 vertex2;
+    public Vector3 vertex3;
+    public Vector3 vertex4;
 
-    private float size = 0.15f;
+    private float radiusX = 0.15f;
+    private float radiusY = 0.15f;
     private bool showDebugVertices = false;
 
     void Start()
     {
-        size = gameObject.GetComponentInParent<SnakeController>().snakeWidthRadius;
-
-        CreateVertex(ref vertex1, "Vertex1", new Vector3(size, 0, 0)); // right
-        CreateVertex(ref vertex2, "Vertex2", new Vector3(-size, 0, 0)); // left
-        CreateVertex(ref vertex3, "Vertex3", new Vector3(0, size, 0)); // up
-        CreateVertex(ref vertex4, "Vertex4", new Vector3(0, -size, 0)); // down
-
+        radiusX = radiusY = gameObject.GetComponentInParent<SnakeController>().snakeWidthRadius;
         showDebugVertices = gameObject.GetComponentInParent<SnakeController>().showDebugMeshVerticles;
+    }
 
+    private void OnDrawGizmos()
+    {
         if (showDebugVertices)
         {
-            CreateDebugSphere(vertex1);
-            CreateDebugSphere(vertex2);
-            CreateDebugSphere(vertex3);
-            CreateDebugSphere(vertex4);
+            Gizmos.color = UnityEngine.Color.blue;
+            Gizmos.DrawSphere(vertex1, 0.02f);
+            Gizmos.DrawSphere(vertex2, 0.02f);
+            Gizmos.DrawSphere(vertex3, 0.02f);
+            Gizmos.DrawSphere(vertex4, 0.02f);
         }
     }
-
-    void CreateVertex(ref Transform vertex, string name, Vector3 offset)
-    {
-        var obj = new GameObject(name);
-        obj.transform.position = transform.position + offset;
-        obj.transform.SetParent(transform);
-        vertex = obj.transform;
-    }
-
-    void CreateDebugSphere(Transform vertex)
-    {
-        var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.transform.position = vertex.position;
-        sphere.transform.localScale = Vector3.one * 0.05f;
-        sphere.transform.SetParent(vertex);
-    }
-
 
     // Update is called once per frame
     void Update()
     {
-        
+        var computedVertices = ComputeSegmentMeshVertices(gameObject.transform.position, gameObject.transform.rotation, radiusX, radiusY);
+        vertex1 = computedVertices[0];
+        vertex2 = computedVertices[1];
+        vertex3 = computedVertices[2];
+        vertex4 = computedVertices[3];
+    }
+
+    private static Vector3[] ComputeSegmentMeshVertices(Vector3 centerPosition, Quaternion rotation, float radiusX, float radiusY)
+    {
+        var right = new Vector3(radiusX, 0, 0);
+        var left = new Vector3(-radiusX, 0, 0);
+        var up = new Vector3(0, radiusY, 0);
+        var down = new Vector3(0, -radiusY, 0);
+
+        right = rotation * right;
+        left = rotation * left;
+        up = rotation * up;
+        down = rotation * down;
+
+        // Add the rotated offsets to the center position
+        return new[]
+        {
+            centerPosition + right,
+            centerPosition + left,
+            centerPosition + up,
+            centerPosition + down
+        };
     }
 }

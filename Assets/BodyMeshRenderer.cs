@@ -12,16 +12,8 @@ public class BodyMeshRenderer : MonoBehaviour
     private Mesh mesh;
 
     public Material defaultMaterial;
-
     void Start()
     {
-        var snakeController = GetComponentInParent<SnakeController>();
-        var headMeshSegment = snakeController.head.GetComponent<MeshSegment>();
-        var bodyMeshSegments = snakeController.snakeSegments.Select(x => x.GetComponent<MeshSegment>());
-        meshSegments = new List<MeshSegment> { 
-            headMeshSegment
-        }.Concat(bodyMeshSegments).ToList();
-
         meshFilter = GetComponent<MeshFilter>();
         mesh = new Mesh();
         meshFilter.mesh = mesh;
@@ -32,9 +24,21 @@ public class BodyMeshRenderer : MonoBehaviour
         //meshRenderer.material.mainTexture = Resources.Load<Texture2D>("default_snake_texture");
     }
 
-    // Update is called once per frame
-    void Update()
+    void UpdateBodyMeshSegments()
     {
+        var snakeController = GetComponentInParent<SnakeController>();
+        var headMeshSegment = snakeController.head.GetComponent<MeshSegment>();
+        var bodyMeshSegments = snakeController.snakeSegments.Select(x => x.GetComponent<MeshSegment>());
+
+        meshSegments = new List<MeshSegment> {
+            headMeshSegment
+        }.Concat(bodyMeshSegments).ToList();
+    }
+
+    // Update is called once per frame
+    void LateUpdate()
+    {
+        UpdateBodyMeshSegments();
         GenerateSnakeMesh();
     }
 
@@ -44,26 +48,42 @@ public class BodyMeshRenderer : MonoBehaviour
             return;
 
         List<Vector3> vertices = new List<Vector3>();
-        List<int> triangles = new List<int>();
+        List<int> triangles = new List<int>(); List<Vector2> uvs = new List<Vector2>(); // UV coordinates
+
+        float uvStep = 1.0f / (meshSegments.Count - 1); // Step for texture mapping
 
         for (int i = 0; i < meshSegments.Count - 1; i++)
         {
-            MeshSegment current = meshSegments[i];
-            MeshSegment next = meshSegments[i + 1];
+            var current = meshSegments[i];
+            var next = meshSegments[i + 1];
 
             int baseIndex = vertices.Count;
 
             // Add current segment's vertices
-            vertices.Add(current.vertex1.position); // Right
-            vertices.Add(current.vertex2.position); // Left
-            vertices.Add(current.vertex3.position); // Up
-            vertices.Add(current.vertex4.position); // Down
+            vertices.Add(current.vertex1); // Right
+            vertices.Add(current.vertex2); // Left
+            vertices.Add(current.vertex3); // Up
+            vertices.Add(current.vertex4); // Down
 
             // Add next segment's vertices
-            vertices.Add(next.vertex1.position); // Right
-            vertices.Add(next.vertex2.position); // Left
-            vertices.Add(next.vertex3.position); // Up
-            vertices.Add(next.vertex4.position); // Down
+            vertices.Add(next.vertex1); // Right
+            vertices.Add(next.vertex2); // Left
+            vertices.Add(next.vertex3); // Up
+            vertices.Add(next.vertex4); // Down
+
+            // UV Mapping - Stretch along the length of the snake
+            float uvX = i * uvStep;
+            float uvXNext = (i + 1) * uvStep;
+
+            uvs.Add(new Vector2(uvX, 1)); // Current Right
+            uvs.Add(new Vector2(uvX, 0)); // Current Left
+            uvs.Add(new Vector2(uvX, 1)); // Current Up
+            uvs.Add(new Vector2(uvX, 0)); // Current Down
+
+            uvs.Add(new Vector2(uvXNext, 1)); // Next Right
+            uvs.Add(new Vector2(uvXNext, 0)); // Next Left
+            uvs.Add(new Vector2(uvXNext, 1)); // Next Up
+            uvs.Add(new Vector2(uvXNext, 0)); // Next Down
 
             // Define four quads (8 triangles)
 
@@ -109,6 +129,7 @@ public class BodyMeshRenderer : MonoBehaviour
         mesh.Clear();
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
+        mesh.uv = uvs.ToArray(); // Assign UV mapping
         mesh.RecalculateNormals();
     }
 }
