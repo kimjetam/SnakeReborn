@@ -31,9 +31,6 @@ public class SnakeController : MonoBehaviour
     [HideInInspector]
     public GameObject eye2;
     private Material eyeMaterial;
-
-    public CameraMovement cameraMovement;
-
     
     public bool showDebugPath = false;
     public bool showDebugSegments = false;

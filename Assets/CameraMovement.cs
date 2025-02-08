@@ -19,8 +19,11 @@ public class CameraMovement : MonoBehaviour
         //transform.position = Vector3.MoveTowards(gameObject.transform.position, followObject.transform.position, speed * Time.deltaTime);
         ////transform.eulerAngles = followObject.transform.eulerAngles;
         //transform.LookAt(followObject.transform);
-
-        rotationSpeed = followSpeed = snakeController.moveSpeed;
+        var snakeMoveSpeed = snakeController.moveSpeed;
+        if(snakeMoveSpeed > 2 && snakeMoveSpeed < 4)
+        {
+            rotationSpeed = followSpeed = snakeController.moveSpeed;
+        }
 
         if (target == null) target = snakeController.headNeck.transform;
 
