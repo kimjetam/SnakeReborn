@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
-using static UnityEngine.Rendering.HableCurve;
 
 public class SnakeController : MonoBehaviour
 {
@@ -104,7 +100,7 @@ public class SnakeController : MonoBehaviour
         tailMeshSegment.radiusY = 0.01f;
         tailMeshSegment.overrideRadiusValues = true;
 
-        eyeMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/yellow.mat");
+        eyeMaterial = Resources.Load<Material>("Materials/yellow");
         eye1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         eye1.gameObject.name = "eye1";
         eye1.transform.localScale = Vector3.one * 0.1f;
