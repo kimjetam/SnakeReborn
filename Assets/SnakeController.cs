@@ -1,41 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
+using static UnityEngine.Rendering.HableCurve;
 
 public class SnakeController : MonoBehaviour
 {
     private bool isMoving = false;
     private bool isTurning = false;
+    private LineRenderer lineRenderer;
+    private List<Vector3> lineRendererPoints = new List<Vector3>();
+    private SnakeSegment headMovingPart;
+
     public bool isPaused = false;
 
     public float moveSpeed = 5f;
     public float gridSize = 1f;
     public float snakeWidthRadius = 0.15f;
-
-    public GameObject head;
-    public GameObject headFront;
+    public int initialSnakeLength = 5;
+    [HideInInspector]
+    public GameObject headNeck;
+    [HideInInspector]
+    public GameObject headTip;
+    [HideInInspector]
     public GameObject headMiddle;
+    [HideInInspector]
     public List<GameObject> snakeSegments;
+    [HideInInspector]
     public GameObject tail;
-
+    [HideInInspector]
     public GameObject eye1;
+    [HideInInspector]
     public GameObject eye2;
+    private Material eyeMaterial;
 
-    private SnakeSegment headSegment;
-    private LineRenderer lineRenderer;
-    private List<Vector3> lineRendererPoints = new List<Vector3>();
+    public CameraMovement cameraMovement;
+
+    
     public bool showDebugPath = false;
     public bool showDebugSegments = false;
     public bool showDebugMeshVerticles = false;
 
     void Start()
     {
-        headSegment = head.GetComponent<SnakeSegment>();
-        headSegment.moveDirection = Vector3.forward;
-        headSegment.upcommingMoveDirection = Vector3.forward;
+        InitSnakeHeadAndTail();
+        InitSnakeBody();
 
-        if(showDebugSegments )
+        if (showDebugSegments )
         {
             SetupDebugVisuals();
         }
@@ -50,20 +63,101 @@ public class SnakeController : MonoBehaviour
         }
     }
 
+    void InitSnakeHeadAndTail()
+    {
+        headNeck = new GameObject("HeadNeck");
+        headNeck.transform.position = Vector3.zero;
+        headNeck.AddComponent<SnakeSegment>();
+        headNeck.AddComponent<MeshSegment>();
+        headNeck.transform.SetParent(gameObject.transform, false);
+        headMovingPart = headNeck.GetComponent<SnakeSegment>();
+
+
+        headTip = new GameObject("headTip");
+        headTip.transform.position = Vector3.zero;
+        headTip.AddComponent<SnakeSegment>();
+        headTip.AddComponent<MeshSegment>();
+        headTip.transform.SetParent(gameObject.transform, false);
+        var headTipMeshSegment = headTip.GetComponent<MeshSegment>();
+        headTipMeshSegment.radiusX = 0.01f;
+        headTipMeshSegment.radiusY = 0.01f;
+        headTipMeshSegment.overrideRadiusValues = true;
+
+
+        headMiddle = new GameObject("headMiddle");
+        headMiddle.transform.position = Vector3.zero;
+        headMiddle.AddComponent<SnakeSegment>();
+        headMiddle.AddComponent<MeshSegment>();
+        headMiddle.transform.SetParent(gameObject.transform, false);
+        var headMiddleMeshSegment = headMiddle.GetComponent<MeshSegment>();
+        headMiddleMeshSegment.radiusX = 0.3f;
+        headMiddleMeshSegment.radiusY = 0.21f;
+        headMiddleMeshSegment.overrideRadiusValues = true;
+
+        tail = new GameObject("Tail");
+        tail.transform.position = Vector3.zero;
+        tail.AddComponent<SnakeSegment>();
+        tail.AddComponent<MeshSegment>();
+        tail.transform.SetParent(gameObject.transform, false);
+        var tailMeshSegment = tail.GetComponent<MeshSegment>();
+        tailMeshSegment.radiusX = 0.01f;
+        tailMeshSegment.radiusY = 0.01f;
+        tailMeshSegment.overrideRadiusValues = true;
+
+        eyeMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/yellow.mat");
+        eye1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        eye1.gameObject.name = "eye1";
+        eye1.transform.localScale = Vector3.one * 0.1f;
+        eye1.transform.SetParent(gameObject.transform, false);
+
+        eye2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        eye2.gameObject.name = "eye2";
+        eye2.transform.localScale = Vector3.one * 0.1f;
+        eye2.transform.SetParent(gameObject.transform, false);
+
+        Renderer rend = eye1.GetComponent<Renderer>();
+        if (rend != null && eyeMaterial != null)
+        {
+            rend.material = eyeMaterial;
+        }
+
+        rend = eye2.GetComponent<Renderer>();
+        if (rend != null && eyeMaterial != null)
+        {
+            rend.material = eyeMaterial;
+        }
+    }
+
+    void InitSnakeBody()
+    {
+        snakeSegments = new List<GameObject>();
+        for (int i = 0; i < initialSnakeLength; i++)
+        {
+            var segment = new GameObject($"Segment_{i}");
+            segment.transform.position = Vector3.forward * (gridSize + (gridSize  * i)) * -1;
+            segment.AddComponent<SnakeSegment>();
+            segment.AddComponent<MeshSegment>();
+            segment.transform.SetParent(transform, false);
+            snakeSegments.Add(segment);
+        }
+    }
+
     void Update()
     {
         HandleInput();
         RotateHead();
+
+        if (!isMoving) StartCoroutine(Move());
     }
 
     void FixedUpdate()
     {
-        if (!isMoving) StartCoroutine(Move());
+        
     }
 
     private void SetupDebugVisuals()
     {
-        CreateSegmentVisual(head);
+        CreateSegmentVisual(headNeck);
         foreach (var segment in snakeSegments) CreateSegmentVisual(segment);
     }
 
@@ -92,26 +186,26 @@ public class SnakeController : MonoBehaviour
 
     private void RotateSnake(float angle)
     {
-        headSegment.upcommingMoveDirection = Quaternion.Euler(0, angle, 0) * headSegment.moveDirection;
+        headMovingPart.upcommingMoveDirection = Quaternion.Euler(0, angle, 0) * headMovingPart.moveDirection;
         isTurning = true;
     }
 
     private void RotateHead()
     {
-        if (headSegment.moveDirection == Vector3.zero) return;
-        var targetRotation = Quaternion.LookRotation(headSegment.moveDirection);
-        headFront.transform.rotation = headMiddle.transform.rotation =  head.transform.rotation = Quaternion.Slerp(head.transform.rotation, targetRotation, Time.deltaTime * 5f);
+        if (headMovingPart.moveDirection == Vector3.zero) return;
+        var targetRotation = Quaternion.LookRotation(headMovingPart.moveDirection);
+        headTip.transform.rotation = headMiddle.transform.rotation =  headMovingPart.transform.rotation = Quaternion.Slerp(headMovingPart.transform.rotation, targetRotation, Time.deltaTime * moveSpeed * 2.5f);
     }
 
     private IEnumerator Move()
     {
         isMoving = true;
 
-        if (IsOnGrid(head.transform.position))
-            headSegment.moveDirection = headSegment.upcommingMoveDirection;
+        if (IsOnGrid(headMovingPart.transform.position))
+            headMovingPart.moveDirection = headMovingPart.upcommingMoveDirection;
 
-        headSegment.startPosition = RoundToHalf(head.transform.position);
-        headSegment.targetPosition = RoundToHalf(headSegment.startPosition + headSegment.moveDirection * gridSize);
+        headMovingPart.startPosition = RoundToHalf(headMovingPart.transform.position);
+        headMovingPart.targetPosition = RoundToHalf(headMovingPart.startPosition + headMovingPart.moveDirection * gridSize);
 
         UpdateSegments();
 
@@ -121,13 +215,15 @@ public class SnakeController : MonoBehaviour
         while (elapsedTime < moveDuration)
         {
             float t = elapsedTime / moveDuration;
-            var newPosition = Vector3.Lerp(headSegment.startPosition, headSegment.targetPosition, t);
-            var direction = (newPosition - head.transform.position).normalized;
-            head.transform.position = newPosition;
-            headFront.transform.position = newPosition + headFront.transform.forward * 0.9f;
+            var newPosition = Vector3.Lerp(headMovingPart.startPosition, headMovingPart.targetPosition, t);
+            var direction = (newPosition - headMovingPart.transform.position).normalized;
+            headMovingPart.transform.position = newPosition;
+            headTip.transform.position = newPosition + headTip.transform.forward * 0.9f;
             headMiddle.transform.position = newPosition + headMiddle.transform.forward * 0.35f;
-            eye1.transform.position = headMiddle.transform.position + headFront.transform.forward * 0.1f - headFront.transform.right * 0.2f + headFront.transform.up * 0.5f;
-            eye2.transform.position = headMiddle.transform.position + headFront.transform.forward * 0.1f + headFront.transform.right * 0.2f + headFront.transform.up * 0.5f;
+            eye1.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f - headTip.transform.right * 0.2f + headTip.transform.up * 0.5f;
+            eye2.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f + headTip.transform.right * 0.2f + headTip.transform.up * 0.5f;
+
+            //cameraMovement.FixedUpdate2();
 
             MoveSegments(t);
 
@@ -145,7 +241,7 @@ public class SnakeController : MonoBehaviour
         for (int i = 0; i < snakeSegments.Count; i++)
         {
             var segment = snakeSegments[i].GetComponent<SnakeSegment>();
-            var prevSegment = i == 0 ? headSegment : snakeSegments[i - 1].GetComponent<SnakeSegment>();
+            var prevSegment = i == 0 ? headMovingPart : snakeSegments[i - 1].GetComponent<SnakeSegment>();
 
             segment.startPosition = RoundToHalf(segment.transform.position);
             segment.moveDirection = prevSegment.moveDirection;
@@ -211,9 +307,11 @@ public class SnakeController : MonoBehaviour
 
     private void SnapToGrid()
     {
-        head.transform.position = RoundToHalf(headSegment.targetPosition);
-        headFront.transform.position = headSegment.targetPosition + headSegment.moveDirection * 0.9f;
-        headMiddle.transform.position = headSegment.targetPosition + headSegment.moveDirection * 0.35f;
+        headMovingPart.transform.position = RoundToHalf(headMovingPart.targetPosition);
+        headTip.transform.position = headMovingPart.targetPosition + headMovingPart.moveDirection * 0.9f;
+        headMiddle.transform.position = headMovingPart.targetPosition + headMovingPart.moveDirection * 0.35f;
+
+        //cameraMovement.FixedUpdate2();
 
         for (int i = 0; i < snakeSegments.Count; i++)
         {

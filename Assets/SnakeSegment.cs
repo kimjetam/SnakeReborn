@@ -6,9 +6,9 @@ using static UnityEngine.GraphicsBuffer;
 public class SnakeSegment : MonoBehaviour
 {
     [HideInInspector]
-    public Vector3 moveDirection;
+    public Vector3 moveDirection = Vector3.forward;
     [HideInInspector]
-    public Vector3 upcommingMoveDirection;
+    public Vector3 upcommingMoveDirection = Vector3.forward;
     [HideInInspector]
     public Vector3 startPosition;
     [HideInInspector]
