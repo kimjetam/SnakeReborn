@@ -7,11 +7,11 @@ public class SnakeController : MonoBehaviour
 {
     private bool isMoving = false;
     private bool isTurning = false;
+    public bool isFrozen = false;
+
     private LineRenderer lineRenderer;
     private List<Vector3> lineRendererPoints = new List<Vector3>();
     private SnakeSegment headMovingPart;
-
-    public bool isPaused = false;
 
     public float moveSpeed = 5f;
     public float gridSize = 1f;
@@ -42,7 +42,7 @@ public class SnakeController : MonoBehaviour
         var snakeInput = GetComponent<SnakeInput>();
         snakeInput.OnSnakeTurn += HandleSnakeTurn; // Subscribe to the event
         snakeInput.OnSnakeSpeedIncrement += HandleMoveSpeedIncrement;
-        snakeInput.OnFreezeTime += HandleTimeFreeze;
+        snakeInput.OnFreezeTime += HandleTimeFreezeSwitch;
     }
 
     private void OnDisable()
@@ -50,7 +50,7 @@ public class SnakeController : MonoBehaviour
         var snakeInput = GetComponent<SnakeInput>();
         snakeInput.OnSnakeTurn -= HandleSnakeTurn; // Unsubscribe from the event
         snakeInput.OnSnakeSpeedIncrement -= HandleMoveSpeedIncrement;
-        snakeInput.OnFreezeTime -= HandleTimeFreeze;
+        snakeInput.OnFreezeTime -= HandleTimeFreezeSwitch;
     }
 
 
@@ -188,10 +188,10 @@ public class SnakeController : MonoBehaviour
         }
     }
 
-    private void HandleTimeFreeze()
+    private void HandleTimeFreezeSwitch()
     {
-        isPaused = !isPaused;
-        Time.timeScale = isPaused ? 0 : 1;
+        isFrozen = !isFrozen;
+        Time.timeScale = isFrozen ? 0 : 1;
     }
 
     private void HandleSnakeTurn(SnakeMovementType movementType)
