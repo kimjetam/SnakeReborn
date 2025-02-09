@@ -37,7 +37,7 @@ public class SnakeManager : MonoBehaviour
         InitSnakeHeadAndTail();
         InitSnakeBody();
 
-        var playerMovement = GetComponent<SnakeMovementController>();
+        var playerMovement = GetComponent<PlayerMovement>();
         playerMovement.Initialize(headNeck.GetComponent<SnakeSegment>(), gridHalfSize, moveSpeed);
 
         var bodyMovement = GetComponent<BodyMovement>();

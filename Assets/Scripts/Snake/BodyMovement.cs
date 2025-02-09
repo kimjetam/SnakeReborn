@@ -16,7 +16,7 @@ public class BodyMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        var snakeMovementController = GetComponent<SnakeMovementController>();
+        var snakeMovementController = GetComponent<PlayerMovement>();
         if(snakeMovementController != null )
         {
             snakeMovementController.OnSnakeMovementUpdated += MoveSegments;
@@ -27,7 +27,7 @@ public class BodyMovement : MonoBehaviour
 
     private void OnDisable()
     {
-        var snakeMovementController = GetComponent<SnakeMovementController>();
+        var snakeMovementController = GetComponent<PlayerMovement>();
         if( snakeMovementController != null)
         {
             snakeMovementController.OnSnakeMovementUpdated -= MoveSegments;
