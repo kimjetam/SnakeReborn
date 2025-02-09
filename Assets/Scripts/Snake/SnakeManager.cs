@@ -37,6 +37,12 @@ public class SnakeManager : MonoBehaviour
         InitSnakeHeadAndTail();
         InitSnakeBody();
 
+        var playerMovement = GetComponent<SnakeMovementController>();
+        playerMovement.Initialize(headNeck.GetComponent<SnakeSegment>(), gridHalfSize, moveSpeed);
+
+        var bodyMovement = GetComponent<BodyMovement>();
+        bodyMovement.Initialize(snakeSegments.Select(x => x.GetComponent<SnakeSegment>()).ToList(), gridHalfSize, headNeck.GetComponent<SnakeSegment>());
+
         if (showDebugSegments)
         {
             SetupDebugVisuals();

@@ -1,19 +1,27 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class SnakeMovementController : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private bool isMovementCoroutineInProgress = false;
-    private bool isTurning = false;
-    private bool isFrozen = false;
-    private SnakeSegment playerSegment;
-    private List<SnakeSegment> bodySegments;
-    private float moveSpeed;
-    private float gridHalfSize;
+    private bool _isMovementCoroutineInProgress = false;
+    private bool _isTurning = false;
+    private bool _isFrozen = false;
+    private SnakeSegment _playerSegment;
+    private float _moveSpeed;
+    private float _gridHalfSize;
+
+    public event Action OnSnakeMovementStarted; // Event for head movement
+    public event Action<Vector3, float> OnSnakeMovementUpdated; // Event for head movement
+    public event Action OnSnakeMovementCompleted; // Event for head movement
+
+    public void Initialize(SnakeSegment playerSegment, float gridHalfSize, float moveSpeed)
+    {
+        _playerSegment = playerSegment;
+        _gridHalfSize = gridHalfSize;
+        _moveSpeed = moveSpeed;
+    }
 
 
     void OnEnable()
@@ -31,26 +39,18 @@ public class SnakeMovementController : MonoBehaviour
         snakeInput.OnSnakeSpeedIncrement -= HandleMoveSpeedIncrement;
         snakeInput.OnFreezeTime -= HandleTimeFreezeSwitch;
     }
-    void Start()
-    {
-        var snakeManager = GetComponent<SnakeManager>();
-        playerSegment = snakeManager.headNeck.GetComponent<SnakeSegment>();
-        bodySegments = snakeManager.snakeSegments.Select(x => x.GetComponent<SnakeSegment>()).ToList();
-        gridHalfSize = snakeManager.gridHalfSize;
-        moveSpeed = snakeManager.moveSpeed;
-    }
 
     // Update is called once per frame
     void Update()
     {
         RotateHead();
 
-        if (!isMovementCoroutineInProgress) StartCoroutine(Move());
+        if (!_isMovementCoroutineInProgress) StartCoroutine(Move());
     }
 
     private void HandleSnakeTurn(SnakeMovementType movementType)
     {
-        if (isTurning) { return; }
+        if (_isTurning) { return; }
 
         var angle = movementType switch
         {
@@ -58,149 +58,66 @@ public class SnakeMovementController : MonoBehaviour
             SnakeMovementType.TurnRight => 90f,
             _ => throw new InvalidOperationException($"{movementType} is not a valid turn type")
         };
-        playerSegment.upcommingMoveDirection = Quaternion.Euler(0, angle, 0) * playerSegment.moveDirection;
-        isTurning = true;
+        _playerSegment.upcommingMoveDirection = Quaternion.Euler(0, angle, 0) * _playerSegment.moveDirection;
+        _isTurning = true;
     }
 
     private void HandleTimeFreezeSwitch()
     {
-        isFrozen = !isFrozen;
-        Time.timeScale = isFrozen ? 0 : 1;
+        _isFrozen = !_isFrozen;
+        Time.timeScale = _isFrozen ? 0 : 1;
     }
 
     private void HandleMoveSpeedIncrement(short increment)
     {
-        var newMoveSpeed = moveSpeed + increment;
+        var newMoveSpeed = _moveSpeed + increment;
 
         if (newMoveSpeed >= 2 && newMoveSpeed <= 6)
         {
-            moveSpeed = newMoveSpeed;
+            _moveSpeed = newMoveSpeed;
         }
     }
 
     private IEnumerator Move()
     {
-        isMovementCoroutineInProgress = true;
+        _isMovementCoroutineInProgress = true;
 
-        if (IsOnGrid(playerSegment.transform.position))
-            playerSegment.moveDirection = playerSegment.upcommingMoveDirection;
+        if (IsOnGrid(_playerSegment.transform.position))
+            _playerSegment.moveDirection = _playerSegment.upcommingMoveDirection;
 
-        playerSegment.startPosition = RoundToHalf(playerSegment.transform.position);
-        playerSegment.targetPosition = RoundToHalf(playerSegment.startPosition + playerSegment.moveDirection * gridHalfSize);
+        _playerSegment.startPosition = RoundToHalf(_playerSegment.transform.position);
+        _playerSegment.targetPosition = RoundToHalf(_playerSegment.startPosition + _playerSegment.moveDirection * _gridHalfSize);
 
-        UpdateSegments();
+        OnSnakeMovementStarted?.Invoke();
 
         float elapsedTime = 0f;
-        float moveDuration = gridHalfSize / moveSpeed;
+        float moveDuration = _gridHalfSize / _moveSpeed;
 
         while (elapsedTime < moveDuration)
         {
             float t = elapsedTime / moveDuration;
-            var newPosition = Vector3.Lerp(playerSegment.startPosition, playerSegment.targetPosition, t);
-            playerSegment.transform.position = newPosition;
+            var newPosition = Vector3.Lerp(_playerSegment.startPosition, _playerSegment.targetPosition, t);
+            _playerSegment.transform.position = newPosition;
 
-            MoveSegments(t);
+            OnSnakeMovementUpdated?.Invoke(_playerSegment.transform.position, t); // Notify listeners
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        SnapToGrid();
-        isTurning = false;
+        _playerSegment.transform.position = _playerSegment.targetPosition;
+        OnSnakeMovementCompleted?.Invoke();
+        _isTurning = false;
 
-        isMovementCoroutineInProgress = false;
+        _isMovementCoroutineInProgress = false;
         yield return null;
     }
 
     private void RotateHead()
     {
-        if (playerSegment.moveDirection == Vector3.zero) return;
-        var targetRotation = Quaternion.LookRotation(playerSegment.moveDirection);
-        playerSegment.transform.rotation = Quaternion.Slerp(playerSegment.transform.rotation, targetRotation, Time.deltaTime * moveSpeed * 2.5f);
-    }
-
-    private void UpdateSegments()
-    {
-        for (int i = 0; i < bodySegments.Count; i++)
-        {
-            var segment = bodySegments[i];
-            var prevSegment = i == 0 ? playerSegment : bodySegments[i - 1];
-
-            segment.startPosition = RoundToHalf(segment.transform.position);
-            segment.moveDirection = prevSegment.moveDirection;
-            segment.targetPosition = RoundToHalf(prevSegment.startPosition);
-
-            if (!ArePointsCollinear(prevSegment.targetPosition, segment.targetPosition, segment.startPosition) || segment.halfTurnDone)
-            {
-                SetupTurning(segment, prevSegment);
-            }
-        }
-    }
-
-    private void SetupTurning(SnakeSegment segment, SnakeSegment prevSegment)
-    {
-        segment.isTurning = true;
-
-        if (!segment.halfTurnDone)
-        {
-            segment.turnCenterPosition = RoundToHalf(segment.startPosition + (prevSegment.targetPosition - segment.targetPosition));
-            segment.turnStartPosition = segment.startPosition;
-
-            var midPositionDirection = (segment.startPosition - segment.turnCenterPosition) + (prevSegment.targetPosition - segment.turnCenterPosition);
-            segment.turnTargetPosition = segment.turnCenterPosition + midPositionDirection.normalized * gridHalfSize;
-        }
-        else
-        {
-            segment.turnStartPosition = segment.turnTargetPosition;
-            segment.turnTargetPosition = segment.targetPosition;
-        }
-    }
-
-    private void MoveSegments(float t)
-    {
-        for (int i = 0; i < bodySegments.Count; i++)
-        {
-            var segment = bodySegments[i];
-
-            var newPosition = segment.isTurning
-                ? segment.turnCenterPosition + Vector3.Slerp(segment.turnStartPosition - segment.turnCenterPosition, segment.turnTargetPosition - segment.turnCenterPosition, t)
-                : Vector3.Lerp(segment.startPosition, segment.targetPosition, t);
-
-            Vector3 rotationDirection = (newPosition - segment.transform.position).normalized;
-            if (rotationDirection != Vector3.zero)
-            {
-                segment.transform.rotation = Quaternion.LookRotation(rotationDirection);
-            }
-            segment.transform.position = newPosition;
-        }
-    }
-
-    private void SnapToGrid()
-    {
-        playerSegment.transform.position = RoundToHalf(playerSegment.targetPosition);
-
-        for (int i = 0; i < bodySegments.Count; i++)
-        {
-            var segment = bodySegments[i];
-            if (segment.isTurning)
-            {
-                if (segment.halfTurnDone)
-                {
-                    segment.isTurning = false;
-                    segment.halfTurnDone = false;
-                    segment.transform.position = RoundToHalf(segment.turnTargetPosition);
-                }
-                else
-                {
-                    segment.halfTurnDone = true;
-                    segment.transform.position = segment.turnTargetPosition;
-                }
-            }
-            else
-            {
-                segment.transform.position = RoundToHalf(segment.targetPosition);
-            }
-        }
+        if (_playerSegment.moveDirection == Vector3.zero) return;
+        var targetRotation = Quaternion.LookRotation(_playerSegment.moveDirection);
+        _playerSegment.transform.rotation = Quaternion.Slerp(_playerSegment.transform.rotation, targetRotation, Time.deltaTime * _moveSpeed * 2.5f);
     }
 
     private bool IsOnGrid(Vector3 position)
