@@ -167,6 +167,8 @@ public class SnakeController : MonoBehaviour
         tail.transform.position = lastSegment.transform.position - lastSegment.transform.forward;
         tail.transform.rotation = lastSegment.transform.rotation;
 
+        headTip.transform.rotation = headMiddle.transform.rotation = headNeck.transform.rotation;
+
         if (showDebugPath)
         {
             lineRendererPoints.Add(lastSegment.transform.position);
@@ -177,9 +179,11 @@ public class SnakeController : MonoBehaviour
         if (!isMoving) StartCoroutine(Move());
     }
 
-    void FixedUpdate()
+    private void RotateHead()
     {
-        
+        if (headMovingPart.moveDirection == Vector3.zero) return;
+        var targetRotation = Quaternion.LookRotation(headMovingPart.moveDirection);
+        headMovingPart.transform.rotation = Quaternion.Slerp(headMovingPart.transform.rotation, targetRotation, Time.deltaTime * moveSpeed * 2.5f);
     }
 
     private void SetupDebugVisuals()
@@ -223,13 +227,6 @@ public class SnakeController : MonoBehaviour
         };
         headMovingPart.upcommingMoveDirection = Quaternion.Euler(0, angle, 0) * headMovingPart.moveDirection;
         isTurning = true;
-    }
-
-    private void RotateHead()
-    {
-        if (headMovingPart.moveDirection == Vector3.zero) return;
-        var targetRotation = Quaternion.LookRotation(headMovingPart.moveDirection);
-        headTip.transform.rotation = headMiddle.transform.rotation =  headMovingPart.transform.rotation = Quaternion.Slerp(headMovingPart.transform.rotation, targetRotation, Time.deltaTime * moveSpeed * 2.5f);
     }
 
     private IEnumerator Move()
