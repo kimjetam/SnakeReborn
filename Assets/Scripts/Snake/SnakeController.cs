@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,6 +36,21 @@ public class SnakeController : MonoBehaviour
     public bool showDebugPath = false;
     public bool showDebugSegments = false;
     public bool showDebugMeshVerticles = false;
+
+    private void OnEnable()
+    {
+        var snakeInput = GetComponent<SnakeInput>();
+        snakeInput.OnSnakeTurn += RotateSnake; // Subscribe to the event
+        snakeInput.OnSnakeSpeedIncrement += HandleMoveSpeedIncrement;
+    }
+
+    private void OnDisable()
+    {
+        var snakeInput = GetComponent<SnakeInput>();
+        snakeInput.OnSnakeTurn -= RotateSnake; // Unsubscribe from the event
+        snakeInput.OnSnakeSpeedIncrement -= HandleMoveSpeedIncrement;
+    }
+
 
     void Start()
     {
@@ -137,7 +153,6 @@ public class SnakeController : MonoBehaviour
 
     void Update()
     {
-        HandleInput();
         RotateHead();
 
         if (!isMoving) StartCoroutine(Move());
@@ -161,24 +176,26 @@ public class SnakeController : MonoBehaviour
         sphere.transform.SetParent(segment.transform, false);
     }
 
-    private void HandleInput()
+    private void HandleMoveSpeedIncrement(short increment)
     {
-        if (isTurning) return;
+        var newMoveSpeed = moveSpeed + increment;
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) RotateSnake(-90f);
-        else if (Input.GetKeyDown(KeyCode.RightArrow)) RotateSnake(90f);
-        else if (Input.GetKeyDown(KeyCode.UpArrow)) moveSpeed++;
-        else if (Input.GetKeyDown(KeyCode.DownArrow) && moveSpeed > 1) moveSpeed--;
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (newMoveSpeed >= 2 && newMoveSpeed <= 6) 
         {
-            isPaused = !isPaused;
-            Time.timeScale = isPaused ? 0 : 1;
+            moveSpeed = newMoveSpeed;
         }
     }
 
-    private void RotateSnake(float angle)
+    private void RotateSnake(SnakeMovementType movementType)
     {
+        if(isTurning) { return; }
+
+        var angle = movementType switch
+        {
+            SnakeMovementType.TurnLeft => -90f,
+            SnakeMovementType.TurnRight => 90f,
+            _ => throw new InvalidOperationException($"{movementType} is not a valid turning type")
+        };
         headMovingPart.upcommingMoveDirection = Quaternion.Euler(0, angle, 0) * headMovingPart.moveDirection;
         isTurning = true;
     }

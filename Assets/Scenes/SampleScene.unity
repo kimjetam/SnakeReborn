@@ -151,8 +151,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDirection: {x: 0, y: 0, z: 1}
+  rotationDirection: {x: 0, y: 0, z: 1}
+  rotationSpeed: 5
+  isMoving: 0
+  isTurning: 0
   isPaused: 0
+  _snakeController: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  sphereOffsets:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  smallSpheres: []
 --- !u!65 &7486179
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -41262,6 +41273,7 @@ GameObject:
   - component: {fileID: 1772568061}
   - component: {fileID: 1772568063}
   - component: {fileID: 1772568062}
+  - component: {fileID: 1772568064}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -41293,7 +41305,6 @@ MonoBehaviour:
   tail: {fileID: 0}
   eye1: {fileID: 0}
   eye2: {fileID: 0}
-  cameraMovement: {fileID: 330585548}
   showDebugPath: 0
   showDebugSegments: 0
   showDebugMeshVerticles: 0
@@ -41379,6 +41390,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1772568058}
   m_Mesh: {fileID: 0}
+--- !u!114 &1772568064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772568058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a37f8448e349f4798206fe272419d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1774420210
 GameObject:
   m_ObjectHideFlags: 0
