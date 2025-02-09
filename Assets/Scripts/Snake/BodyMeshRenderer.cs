@@ -24,13 +24,13 @@ public class BodyMeshRenderer : MonoBehaviour
 
     void UpdateBodyMeshSegments()
     {
-        var snakeController = GetComponentInParent<SnakeController>();
+        var snakeManager = GetComponentInParent<SnakeManager>();
 
-        var headTipMeshSegment = snakeController.headTip.GetComponent<MeshSegment>();
-        var headMiddleMeshSegment = snakeController.headMiddle.GetComponent<MeshSegment>();
-        var headNeckMeshSegment = snakeController.headNeck.GetComponent<MeshSegment>();
-        var tailMeshSegment = snakeController.tail.GetComponent<MeshSegment>();
-        var bodyMeshSegments = snakeController.snakeSegments.Select(x => x.GetComponent<MeshSegment>());
+        var headTipMeshSegment = snakeManager.headTip.GetComponent<MeshSegment>();
+        var headMiddleMeshSegment = snakeManager.headMiddle.GetComponent<MeshSegment>();
+        var headNeckMeshSegment = snakeManager.headNeck.GetComponent<MeshSegment>();
+        var tailMeshSegment = snakeManager.tail.GetComponent<MeshSegment>();
+        var bodyMeshSegments = snakeManager.snakeSegments.Select(x => x.GetComponent<MeshSegment>());
 
         meshSegments = new List<MeshSegment> {
             headTipMeshSegment, headMiddleMeshSegment, headNeckMeshSegment

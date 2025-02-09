@@ -8184,12 +8184,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c51f4c3c8f16b1f4bb4e6103ed3e6338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   followSpeed: 5
   rotationSpeed: 5
   offset: {x: 0, y: 3, z: -3}
   rotationOffset: {x: 45, y: 0, z: 0}
-  snakeController: {fileID: 1772568059}
+  snakeManager: {fileID: 1772568059}
 --- !u!1 &332111774
 GameObject:
   m_ObjectHideFlags: 0
@@ -41274,6 +41273,7 @@ GameObject:
   - component: {fileID: 1772568063}
   - component: {fileID: 1772568062}
   - component: {fileID: 1772568064}
+  - component: {fileID: 1772568065}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -41293,9 +41293,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ec220140e4c12b418ceac583b237ed8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPaused: 0
   moveSpeed: 2
-  gridSize: 0.5
+  gridHalfSize: 0.5
   snakeWidthRadius: 0.15
   initialSnakeLength: 20
   headNeck: {fileID: 0}
@@ -41400,6 +41399,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08a37f8448e349f4798206fe272419d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1772568065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772568058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6cf278021257c4395fddc17abe2d41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1774420210

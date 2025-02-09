@@ -22,9 +22,9 @@ public class MeshSegment : MonoBehaviour
     {
         if(!overrideRadiusValues)
         {
-            radiusX = radiusY = gameObject.GetComponentInParent<SnakeController>().snakeWidthRadius;
+            radiusX = radiusY = gameObject.GetComponentInParent<SnakeManager>().snakeWidthRadius;
         }
-        showDebugVertices = gameObject.GetComponentInParent<SnakeController>().showDebugMeshVerticles;
+        showDebugVertices = gameObject.GetComponentInParent<SnakeManager>().showDebugMeshVerticles;
     }
 
     private void OnDrawGizmos()
