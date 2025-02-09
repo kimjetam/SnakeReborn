@@ -14,7 +14,7 @@ public class SnakeController : MonoBehaviour
     private SnakeSegment headMovingPart;
 
     public float moveSpeed = 5f;
-    public float gridSize = 1f;
+    public float gridHalfSize = 0.5f;
     public float snakeWidthRadius = 0.15f;
     public int initialSnakeLength = 5;
     [HideInInspector]
@@ -145,7 +145,7 @@ public class SnakeController : MonoBehaviour
         for (int i = 0; i < initialSnakeLength; i++)
         {
             var segment = new GameObject($"Segment_{i}");
-            segment.transform.position = Vector3.forward * (gridSize + (gridSize  * i)) * -1;
+            segment.transform.position = Vector3.forward * (gridHalfSize + (gridHalfSize  * i)) * -1;
             segment.AddComponent<SnakeSegment>();
             segment.AddComponent<MeshSegment>();
             segment.transform.SetParent(transform, false);
@@ -223,12 +223,12 @@ public class SnakeController : MonoBehaviour
             headMovingPart.moveDirection = headMovingPart.upcommingMoveDirection;
 
         headMovingPart.startPosition = RoundToHalf(headMovingPart.transform.position);
-        headMovingPart.targetPosition = RoundToHalf(headMovingPart.startPosition + headMovingPart.moveDirection * gridSize);
+        headMovingPart.targetPosition = RoundToHalf(headMovingPart.startPosition + headMovingPart.moveDirection * gridHalfSize);
 
         UpdateSegments();
 
         float elapsedTime = 0f;
-        float moveDuration = gridSize / moveSpeed;
+        float moveDuration = gridHalfSize / moveSpeed;
 
         while (elapsedTime < moveDuration)
         {
@@ -282,7 +282,7 @@ public class SnakeController : MonoBehaviour
             segment.turnStartPosition = segment.startPosition;
 
             var midPositionDirection = (segment.startPosition - segment.turnCenterPosition) + (prevSegment.targetPosition - segment.turnCenterPosition);
-            segment.turnTargetPosition = segment.turnCenterPosition + midPositionDirection.normalized * gridSize;
+            segment.turnTargetPosition = segment.turnCenterPosition + midPositionDirection.normalized * gridHalfSize;
         }
         else
         {
