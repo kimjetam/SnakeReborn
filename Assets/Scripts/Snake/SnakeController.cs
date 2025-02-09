@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static UnityEngine.Rendering.HableCurve;
 
 public class SnakeController : MonoBehaviour
 {
@@ -157,6 +159,21 @@ public class SnakeController : MonoBehaviour
     {
         RotateHead();
 
+        headTip.transform.position = headMovingPart.transform.position + headTip.transform.forward * 0.9f;
+        headMiddle.transform.position = headMovingPart.transform.position + headMiddle.transform.forward * 0.35f;
+        eye1.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f - headTip.transform.right * 0.2f + headTip.transform.up * 0.5f;
+        eye2.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f + headTip.transform.right * 0.2f + headTip.transform.up * 0.5f;
+        var lastSegment = snakeSegments.Last();
+        tail.transform.position = lastSegment.transform.position - lastSegment.transform.forward;
+        tail.transform.rotation = lastSegment.transform.rotation;
+
+        if (showDebugPath)
+        {
+            lineRendererPoints.Add(lastSegment.transform.position);
+            lineRenderer.positionCount = lineRendererPoints.Count;
+            lineRenderer.SetPosition(lineRendererPoints.Count - 1, lastSegment.transform.position);
+        }
+
         if (!isMoving) StartCoroutine(Move());
     }
 
@@ -234,14 +251,7 @@ public class SnakeController : MonoBehaviour
         {
             float t = elapsedTime / moveDuration;
             var newPosition = Vector3.Lerp(headMovingPart.startPosition, headMovingPart.targetPosition, t);
-            var direction = (newPosition - headMovingPart.transform.position).normalized;
             headMovingPart.transform.position = newPosition;
-            headTip.transform.position = newPosition + headTip.transform.forward * 0.9f;
-            headMiddle.transform.position = newPosition + headMiddle.transform.forward * 0.35f;
-            eye1.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f - headTip.transform.right * 0.2f + headTip.transform.up * 0.5f;
-            eye2.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f + headTip.transform.right * 0.2f + headTip.transform.up * 0.5f;
-
-            //cameraMovement.FixedUpdate2();
 
             MoveSegments(t);
 
@@ -307,29 +317,12 @@ public class SnakeController : MonoBehaviour
                 segment.transform.rotation = Quaternion.LookRotation(rotationDirection);
             }
             segment.transform.position = newPosition;
-
-            if(i == snakeSegments.Count - 1)
-            {
-                tail.transform.position = segment.transform.position - segment.transform.forward;
-                tail.transform.rotation = segment.transform.rotation;
-            }
-
-            if (showDebugPath && i == 0)
-            {
-                lineRendererPoints.Add(segment.transform.position);
-                lineRenderer.positionCount = lineRendererPoints.Count;
-                lineRenderer.SetPosition(lineRendererPoints.Count - 1, segment.transform.position);
-            }
         }
     }
 
     private void SnapToGrid()
     {
         headMovingPart.transform.position = RoundToHalf(headMovingPart.targetPosition);
-        headTip.transform.position = headMovingPart.targetPosition + headMovingPart.moveDirection * 0.9f;
-        headMiddle.transform.position = headMovingPart.targetPosition + headMovingPart.moveDirection * 0.35f;
-
-        //cameraMovement.FixedUpdate2();
 
         for (int i = 0; i < snakeSegments.Count; i++)
         {
@@ -351,12 +344,6 @@ public class SnakeController : MonoBehaviour
             else
             {
                 segment.transform.position = RoundToHalf(segment.targetPosition);
-            }
-
-            if (i == snakeSegments.Count - 1)
-            {
-                tail.transform.position = segment.transform.position - segment.transform.forward;
-                tail.transform.rotation = segment.transform.rotation;
             }
         }
     }
