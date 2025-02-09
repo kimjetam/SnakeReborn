@@ -40,15 +40,17 @@ public class SnakeController : MonoBehaviour
     private void OnEnable()
     {
         var snakeInput = GetComponent<SnakeInput>();
-        snakeInput.OnSnakeTurn += RotateSnake; // Subscribe to the event
+        snakeInput.OnSnakeTurn += HandleSnakeTurn; // Subscribe to the event
         snakeInput.OnSnakeSpeedIncrement += HandleMoveSpeedIncrement;
+        snakeInput.OnFreezeTime += HandleTimeFreeze;
     }
 
     private void OnDisable()
     {
         var snakeInput = GetComponent<SnakeInput>();
-        snakeInput.OnSnakeTurn -= RotateSnake; // Unsubscribe from the event
+        snakeInput.OnSnakeTurn -= HandleSnakeTurn; // Unsubscribe from the event
         snakeInput.OnSnakeSpeedIncrement -= HandleMoveSpeedIncrement;
+        snakeInput.OnFreezeTime -= HandleTimeFreeze;
     }
 
 
@@ -186,7 +188,13 @@ public class SnakeController : MonoBehaviour
         }
     }
 
-    private void RotateSnake(SnakeMovementType movementType)
+    private void HandleTimeFreeze()
+    {
+        isPaused = !isPaused;
+        Time.timeScale = isPaused ? 0 : 1;
+    }
+
+    private void HandleSnakeTurn(SnakeMovementType movementType)
     {
         if(isTurning) { return; }
 
@@ -194,7 +202,7 @@ public class SnakeController : MonoBehaviour
         {
             SnakeMovementType.TurnLeft => -90f,
             SnakeMovementType.TurnRight => 90f,
-            _ => throw new InvalidOperationException($"{movementType} is not a valid turning type")
+            _ => throw new InvalidOperationException($"{movementType} is not a valid turn type")
         };
         headMovingPart.upcommingMoveDirection = Quaternion.Euler(0, angle, 0) * headMovingPart.moveDirection;
         isTurning = true;
