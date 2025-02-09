@@ -16,23 +16,23 @@ public class BodyMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        var snakeMovementController = GetComponent<PlayerMovement>();
-        if(snakeMovementController != null )
+        var playerMovement = GetComponent<PlayerMovement>();
+        if(playerMovement != null )
         {
-            snakeMovementController.OnSnakeMovementUpdated += MoveSegments;
-            snakeMovementController.OnSnakeMovementStarted += InitBodyMovement;
-            snakeMovementController.OnSnakeMovementCompleted += SnapBodySegmentsToGrid;
+            playerMovement.OnSnakeMovementUpdated += MoveSegments;
+            playerMovement.OnSnakeMovementStarted += InitBodyMovement;
+            playerMovement.OnSnakeMovementCompleted += SnapBodySegmentsToGrid;
         }
     }
 
     private void OnDisable()
     {
-        var snakeMovementController = GetComponent<PlayerMovement>();
-        if( snakeMovementController != null)
+        var playerMovement = GetComponent<PlayerMovement>();
+        if(playerMovement != null)
         {
-            snakeMovementController.OnSnakeMovementUpdated -= MoveSegments;
-            snakeMovementController.OnSnakeMovementStarted -= InitBodyMovement;
-            snakeMovementController.OnSnakeMovementCompleted -= SnapBodySegmentsToGrid;
+            playerMovement.OnSnakeMovementUpdated -= MoveSegments;
+            playerMovement.OnSnakeMovementStarted -= InitBodyMovement;
+            playerMovement.OnSnakeMovementCompleted -= SnapBodySegmentsToGrid;
         }
     }
 
