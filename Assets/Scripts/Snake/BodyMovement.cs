@@ -43,11 +43,11 @@ public class BodyMovement : MonoBehaviour
             var segment = _bodySegments[i];
             var prevSegment = i == 0 ? _playerSegment : _bodySegments[i - 1];
 
-            segment.startPosition = RoundToHalf(segment.transform.position);
+            segment.startPosition = VectorHelper.RoundToHalf(segment.transform.position);
             segment.moveDirection = prevSegment.moveDirection;
-            segment.targetPosition = RoundToHalf(prevSegment.startPosition);
+            segment.targetPosition = VectorHelper.RoundToHalf(prevSegment.startPosition);
 
-            if (!ArePointsCollinear(prevSegment.targetPosition, segment.targetPosition, segment.startPosition) || segment.halfTurnDone)
+            if (!VectorHelper.ArePointsCollinear(prevSegment.targetPosition, segment.targetPosition, segment.startPosition) || segment.halfTurnDone)
             {
                 SetupTurning(segment, prevSegment);
             }
@@ -87,7 +87,7 @@ public class BodyMovement : MonoBehaviour
 
         if (!segment.halfTurnDone)
         {
-            segment.turnCenterPosition = RoundToHalf(segment.startPosition + (prevSegment.targetPosition - segment.targetPosition));
+            segment.turnCenterPosition = VectorHelper.RoundToHalf(segment.startPosition + (prevSegment.targetPosition - segment.targetPosition));
             segment.turnStartPosition = segment.startPosition;
 
             var midPositionDirection = (segment.startPosition - segment.turnCenterPosition) + (prevSegment.targetPosition - segment.turnCenterPosition);
@@ -111,7 +111,7 @@ public class BodyMovement : MonoBehaviour
                 {
                     segment.isTurning = false;
                     segment.halfTurnDone = false;
-                    segment.transform.position = RoundToHalf(segment.turnTargetPosition);
+                    segment.transform.position = VectorHelper.RoundToHalf(segment.turnTargetPosition);
                 }
                 else
                 {
@@ -121,22 +121,8 @@ public class BodyMovement : MonoBehaviour
             }
             else
             {
-                segment.transform.position = RoundToHalf(segment.targetPosition);
+                segment.transform.position = VectorHelper.RoundToHalf(segment.targetPosition);
             }
         }
-    }
-
-    private bool ArePointsCollinear(Vector3 A, Vector3 B, Vector3 C, float epsilon = 1e-6f)
-    {
-        return Vector3.Cross(B - A, C - A).sqrMagnitude < epsilon;
-    }
-
-    private Vector3 RoundToHalf(Vector3 original)
-    {
-        return new Vector3(
-            Mathf.Round(original.x * 2) / 2,
-            Mathf.Round(original.y * 2) / 2,
-            Mathf.Round(original.z * 2) / 2
-        );
     }
 }

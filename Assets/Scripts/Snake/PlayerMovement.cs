@@ -82,11 +82,11 @@ public class PlayerMovement : MonoBehaviour
     {
         _isMovementCoroutineInProgress = true;
 
-        if (IsOnGrid(_playerSegment.transform.position))
+        if (VectorHelper.IsOnGrid(_playerSegment.transform.position))
             _playerSegment.moveDirection = _playerSegment.upcommingMoveDirection;
 
-        _playerSegment.startPosition = RoundToHalf(_playerSegment.transform.position);
-        _playerSegment.targetPosition = RoundToHalf(_playerSegment.startPosition + _playerSegment.moveDirection * _gridHalfSize);
+        _playerSegment.startPosition = VectorHelper.RoundToHalf(_playerSegment.transform.position);
+        _playerSegment.targetPosition = VectorHelper.RoundToHalf(_playerSegment.startPosition + _playerSegment.moveDirection * _gridHalfSize);
 
         OnSnakeMovementStarted?.Invoke();
 
@@ -118,24 +118,5 @@ public class PlayerMovement : MonoBehaviour
         if (_playerSegment.moveDirection == Vector3.zero) return;
         var targetRotation = Quaternion.LookRotation(_playerSegment.moveDirection);
         _playerSegment.transform.rotation = Quaternion.Slerp(_playerSegment.transform.rotation, targetRotation, Time.deltaTime * _moveSpeed * 2.5f);
-    }
-
-    private bool IsOnGrid(Vector3 position)
-    {
-        return Mathf.Round(position.x * 2) % 2 == 0 && Mathf.Round(position.z * 2) % 2 == 0;
-    }
-
-    private bool ArePointsCollinear(Vector3 A, Vector3 B, Vector3 C, float epsilon = 1e-6f)
-    {
-        return Vector3.Cross(B - A, C - A).sqrMagnitude < epsilon;
-    }
-
-    private Vector3 RoundToHalf(Vector3 original)
-    {
-        return new Vector3(
-            Mathf.Round(original.x * 2) / 2,
-            Mathf.Round(original.y * 2) / 2,
-            Mathf.Round(original.z * 2) / 2
-        );
     }
 }
