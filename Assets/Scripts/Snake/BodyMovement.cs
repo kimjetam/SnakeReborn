@@ -7,6 +7,10 @@ public class BodyMovement : MonoBehaviour
     private float _gridHalfSize;
     private SnakeSegment _playerSegment;
 
+    // Cache frequently used variables
+    private Vector3 _newPosition;
+    private Vector3 _rotationDirection;
+
     public void Initialize(List<SnakeSegment> bodySegments, float gridHalfSize, SnakeSegment playerSegment)
     {
         _bodySegments = bodySegments;
@@ -17,7 +21,7 @@ public class BodyMovement : MonoBehaviour
     private void OnEnable()
     {
         var playerMovement = GetComponent<PlayerMovement>();
-        if(playerMovement != null )
+        if (playerMovement != null)
         {
             playerMovement.OnSnakeMovementUpdated += MoveSegments;
             playerMovement.OnSnakeMovementStarted += InitBodyMovement;
@@ -28,7 +32,7 @@ public class BodyMovement : MonoBehaviour
     private void OnDisable()
     {
         var playerMovement = GetComponent<PlayerMovement>();
-        if(playerMovement != null)
+        if (playerMovement != null)
         {
             playerMovement.OnSnakeMovementUpdated -= MoveSegments;
             playerMovement.OnSnakeMovementStarted -= InitBodyMovement;
@@ -59,8 +63,8 @@ public class BodyMovement : MonoBehaviour
         for (int i = 0; i < _bodySegments.Count; i++)
         {
             var segment = _bodySegments[i];
-            var newPosition = CalculateNewPosition(segment, step);
-            UpdateSegmentPositionAndRotation(segment, newPosition);
+            _newPosition = CalculateNewPosition(segment, step);
+            UpdateSegmentPositionAndRotation(segment, _newPosition);
         }
     }
 
@@ -73,10 +77,10 @@ public class BodyMovement : MonoBehaviour
 
     private void UpdateSegmentPositionAndRotation(SnakeSegment segment, Vector3 newPosition)
     {
-        Vector3 rotationDirection = (newPosition - segment.transform.position).normalized;
-        if (rotationDirection != Vector3.zero)
+        _rotationDirection = (newPosition - segment.transform.position).normalized;
+        if (_rotationDirection != Vector3.zero)
         {
-            segment.transform.rotation = Quaternion.LookRotation(rotationDirection);
+            segment.transform.rotation = Quaternion.LookRotation(_rotationDirection);
         }
         segment.transform.position = newPosition;
     }

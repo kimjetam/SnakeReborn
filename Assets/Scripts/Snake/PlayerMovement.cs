@@ -45,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
     {
         RotateHead();
 
-        if (!_isMovementCoroutineInProgress) StartCoroutine(Move());
+        if (!_isMovementCoroutineInProgress && !_isFrozen) StartCoroutine(Move());
     }
 
     private void HandleSnakeTurn(SnakeMovementType movementType)
@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
     private void HandleTimeFreezeSwitch()
     {
         _isFrozen = !_isFrozen;
-        Time.timeScale = _isFrozen ? 0 : 1;
+        //Time.timeScale = _isFrozen ? 0 : 1;
     }
 
     private void HandleMoveSpeedIncrement(short increment)
