@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private bool _isMovementCoroutineInProgress = false;
-    private bool _isTurning = false;
-    private bool _isFrozen = false;
     private SnakeSegment _playerSegment;
     private float _moveSpeed;
     private float _gridHalfSize;
+
+    private bool _isMovementCoroutineInProgress = false;
+    private bool _isTurning = false;
+    private bool _isFrozen = false;
 
     public event Action OnSnakeMovementStarted; // Event for head movement
     public event Action<Vector3, float> OnSnakeMovementUpdated; // Event for head movement
@@ -23,34 +23,41 @@ public class PlayerMovement : MonoBehaviour
         _moveSpeed = moveSpeed;
     }
 
-
-    void OnEnable()
+    private void OnEnable()
     {
         var snakeInput = GetComponent<SnakeInput>();
-        snakeInput.OnSnakeTurn += HandleSnakeTurn; // Subscribe to the event
-        snakeInput.OnSnakeSpeedIncrement += HandleMoveSpeedIncrement;
-        snakeInput.OnFreezeTime += HandleTimeFreezeSwitch;
+        if (snakeInput != null)
+        {
+            snakeInput.OnSnakeTurn += HandleSnakeTurn;
+            snakeInput.OnSnakeSpeedIncrement += HandleMoveSpeedIncrement;
+            snakeInput.OnFreezeTime += HandleTimeFreezeSwitch;
+        }
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         var snakeInput = GetComponent<SnakeInput>();
-        snakeInput.OnSnakeTurn -= HandleSnakeTurn; // Unsubscribe from the event
-        snakeInput.OnSnakeSpeedIncrement -= HandleMoveSpeedIncrement;
-        snakeInput.OnFreezeTime -= HandleTimeFreezeSwitch;
+        if (snakeInput != null)
+        {
+            snakeInput.OnSnakeTurn -= HandleSnakeTurn;
+            snakeInput.OnSnakeSpeedIncrement -= HandleMoveSpeedIncrement;
+            snakeInput.OnFreezeTime -= HandleTimeFreezeSwitch;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         RotateHead();
 
-        if (!_isMovementCoroutineInProgress && !_isFrozen) StartCoroutine(Move());
+        if (!_isMovementCoroutineInProgress && !_isFrozen)
+        {
+            StartCoroutine(Move());
+        }
     }
 
     private void HandleSnakeTurn(SnakeMovementType movementType)
     {
-        if (_isTurning) { return; }
+        if (_isTurning) return;
 
         var angle = movementType switch
         {
@@ -58,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
             SnakeMovementType.TurnRight => 90f,
             _ => throw new InvalidOperationException($"{movementType} is not a valid turn type")
         };
+
         _playerSegment.upcommingMoveDirection = Quaternion.Euler(0, angle, 0) * _playerSegment.moveDirection;
         _isTurning = true;
     }
@@ -83,7 +91,9 @@ public class PlayerMovement : MonoBehaviour
         _isMovementCoroutineInProgress = true;
 
         if (VectorHelper.IsOnGrid(_playerSegment.transform.position))
+        {
             _playerSegment.moveDirection = _playerSegment.upcommingMoveDirection;
+        }
 
         _playerSegment.startPosition = VectorHelper.RoundToHalf(_playerSegment.transform.position);
         _playerSegment.targetPosition = VectorHelper.RoundToHalf(_playerSegment.startPosition + _playerSegment.moveDirection * _gridHalfSize);
@@ -99,7 +109,7 @@ public class PlayerMovement : MonoBehaviour
             var newPosition = Vector3.Lerp(_playerSegment.startPosition, _playerSegment.targetPosition, t);
             _playerSegment.transform.position = newPosition;
 
-            OnSnakeMovementUpdated?.Invoke(_playerSegment.transform.position, t); // Notify listeners
+            OnSnakeMovementUpdated?.Invoke(_playerSegment.transform.position, t);
 
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -107,16 +117,20 @@ public class PlayerMovement : MonoBehaviour
 
         _playerSegment.transform.position = _playerSegment.targetPosition;
         OnSnakeMovementCompleted?.Invoke();
-        _isTurning = false;
 
+        _isTurning = false;
         _isMovementCoroutineInProgress = false;
-        yield return null;
     }
 
     private void RotateHead()
     {
         if (_playerSegment.moveDirection == Vector3.zero) return;
+
         var targetRotation = Quaternion.LookRotation(_playerSegment.moveDirection);
-        _playerSegment.transform.rotation = Quaternion.Slerp(_playerSegment.transform.rotation, targetRotation, Time.deltaTime * _moveSpeed * 2.5f);
+        _playerSegment.transform.rotation = Quaternion.Slerp(
+            _playerSegment.transform.rotation,
+            targetRotation,
+            Time.deltaTime * _moveSpeed * 2.5f
+        );
     }
 }
