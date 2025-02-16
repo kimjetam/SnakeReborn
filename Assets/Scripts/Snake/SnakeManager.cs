@@ -90,8 +90,8 @@ public class SnakeManager : MonoBehaviour
         headMiddle.AddComponent<MeshSegment>();
         headMiddle.transform.SetParent(gameObject.transform, false);
         var headMiddleMeshSegment = headMiddle.GetComponent<MeshSegment>();
-        headMiddleMeshSegment.radiusX = 0.3f;
-        headMiddleMeshSegment.radiusY = 0.21f;
+        headMiddleMeshSegment.radiusX = 0.35f;
+        headMiddleMeshSegment.radiusY = 0.25f;
         headMiddleMeshSegment.overrideRadiusValues = true;
 
         tail = new GameObject("Tail");
@@ -146,8 +146,8 @@ public class SnakeManager : MonoBehaviour
     {
         headTip.transform.position = headMovingPart.transform.position + headTip.transform.forward * 0.9f;
         headMiddle.transform.position = headMovingPart.transform.position + headMiddle.transform.forward * 0.35f;
-        eye1.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f - headTip.transform.right * 0.2f + headTip.transform.up * 0.1f;
-        eye2.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f + headTip.transform.right * 0.2f + headTip.transform.up * 0.1f;
+        eye1.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f - headTip.transform.right * 0.25f + headTip.transform.up * 0.1f;
+        eye2.transform.position = headMiddle.transform.position + headTip.transform.forward * 0.1f + headTip.transform.right * 0.25f + headTip.transform.up * 0.1f;
         var lastSegment = snakeSegments.Last();
         tail.transform.position = lastSegment.transform.position - lastSegment.transform.forward;
         tail.transform.rotation = lastSegment.transform.rotation;

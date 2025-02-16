@@ -83,6 +83,7 @@ public class PlayerMovement : MonoBehaviour
         if (newMoveSpeed >= 2 && newMoveSpeed <= 6)
         {
             _moveSpeed = newMoveSpeed;
+            gameObject.GetComponent<SnakeManager>().moveSpeed = newMoveSpeed;
         }
     }
 

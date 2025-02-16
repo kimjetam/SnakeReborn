@@ -150,20 +150,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78b4c6248f6e3794e8c277d8c11f84ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDirection: {x: 0, y: 0, z: 1}
-  rotationDirection: {x: 0, y: 0, z: 1}
-  rotationSpeed: 5
-  isMoving: 0
-  isTurning: 0
-  isPaused: 0
-  _snakeController: {fileID: 0}
-  targetPosition: {x: 0, y: 0, z: 0}
-  sphereOffsets:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  smallSpheres: []
 --- !u!65 &7486179
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8122,7 +8108,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 3, z: -3}
+  m_LocalPosition: {x: 0, y: 4, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8186,7 +8172,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followSpeed: 5
   rotationSpeed: 5
-  offset: {x: 0, y: 3, z: -3}
+  offset: {x: 0, y: 4, z: -3}
   rotationOffset: {x: 45, y: 0, z: 0}
   snakeManager: {fileID: 1772568059}
 --- !u!1 &332111774
@@ -41294,9 +41280,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ec220140e4c12b418ceac583b237ed8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
+  moveSpeed: 4
   gridHalfSize: 0.5
-  snakeWidthRadius: 0.15
+  snakeWidthRadius: 0.2
   initialSnakeLength: 20
   headNeck: {fileID: 0}
   headTip: {fileID: 0}
@@ -41317,7 +41303,7 @@ Transform:
   m_GameObject: {fileID: 1772568058}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

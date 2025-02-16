@@ -12,8 +12,8 @@ public class MeshSegment : MonoBehaviour
     [HideInInspector]
     public Vector3 vertex4;
 
-    public float radiusX = 0.15f;
-    public float radiusY = 0.15f;
+    public float radiusX = 0.2f;
+    public float radiusY = 0.2f;
     public bool overrideRadiusValues = false;
 
     private bool showDebugVertices = false;
