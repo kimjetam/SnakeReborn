@@ -96,8 +96,8 @@ public class PlayerMovement : MonoBehaviour
             _playerSegment.moveDirection = _playerSegment.upcommingMoveDirection;
         }
 
-        _playerSegment.startPosition = VectorHelper.RoundToHalf(_playerSegment.transform.position);
-        _playerSegment.targetPosition = VectorHelper.RoundToHalf(_playerSegment.startPosition + _playerSegment.moveDirection * _gridHalfSize);
+        _playerSegment.startPosition = _playerSegment.transform.position;
+        _playerSegment.targetPosition = _playerSegment.startPosition + _playerSegment.moveDirection * _gridHalfSize;
 
         OnSnakeMovementStarted?.Invoke();
 

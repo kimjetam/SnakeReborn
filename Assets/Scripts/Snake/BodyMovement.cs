@@ -47,9 +47,16 @@ public class BodyMovement : MonoBehaviour
             var segment = _bodySegments[i];
             var prevSegment = i == 0 ? _playerSegment : _bodySegments[i - 1];
 
-            segment.startPosition = VectorHelper.RoundToHalf(segment.transform.position);
+            segment.startPosition = segment.transform.position;
             segment.moveDirection = prevSegment.moveDirection;
-            segment.targetPosition = VectorHelper.RoundToHalf(prevSegment.startPosition);
+
+            if(prevSegment.isTurning)
+            {
+                segment.targetPosition = VectorHelper.RoundToHalf(prevSegment.startPosition);
+            } else
+            {
+                segment.targetPosition = prevSegment.startPosition;
+            }
 
             if (!VectorHelper.ArePointsCollinear(prevSegment.targetPosition, segment.targetPosition, segment.startPosition) || segment.halfTurnDone)
             {
@@ -91,7 +98,7 @@ public class BodyMovement : MonoBehaviour
 
         if (!segment.halfTurnDone)
         {
-            segment.turnCenterPosition = VectorHelper.RoundToHalf(segment.startPosition + (prevSegment.targetPosition - segment.targetPosition));
+            segment.turnCenterPosition = segment.startPosition + (prevSegment.targetPosition - segment.targetPosition);
             segment.turnStartPosition = segment.startPosition;
 
             var midPositionDirection = (segment.startPosition - segment.turnCenterPosition) + (prevSegment.targetPosition - segment.turnCenterPosition);
@@ -115,7 +122,7 @@ public class BodyMovement : MonoBehaviour
                 {
                     segment.isTurning = false;
                     segment.halfTurnDone = false;
-                    segment.transform.position = VectorHelper.RoundToHalf(segment.turnTargetPosition);
+                    segment.transform.position = segment.targetPosition;
                 }
                 else
                 {
@@ -125,7 +132,7 @@ public class BodyMovement : MonoBehaviour
             }
             else
             {
-                segment.transform.position = VectorHelper.RoundToHalf(segment.targetPosition);
+                segment.transform.position = segment.targetPosition;
             }
         }
     }

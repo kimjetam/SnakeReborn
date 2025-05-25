@@ -134,7 +134,7 @@ public class SnakeManager : MonoBehaviour
         for (int i = 0; i < initialSnakeLength; i++)
         {
             var segment = new GameObject($"Segment_{i}");
-            segment.transform.position = Vector3.forward * (gridHalfSize + (gridHalfSize  * i)) * -1;
+            segment.transform.position = Vector3.forward * (gridHalfSize + (gridHalfSize * i)) * -1;
             segment.AddComponent<SnakeSegment>();
             segment.AddComponent<MeshSegment>();
             segment.transform.SetParent(transform, false);
