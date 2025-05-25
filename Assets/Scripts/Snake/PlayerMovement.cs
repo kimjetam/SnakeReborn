@@ -59,12 +59,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_isTurning) return;
 
+        var angleAbsoluteValue = 90f;
         var angle = movementType switch
         {
-            SnakeMovementType.TurnLeft => -90f,
-            SnakeMovementType.TurnRight => 90f,
+            SnakeMovementType.TurnLeft => angleAbsoluteValue * -1,
+            SnakeMovementType.TurnRight => angleAbsoluteValue,
             _ => throw new InvalidOperationException($"{movementType} is not a valid turn type")
-        };
+        }; ;
 
         _playerSegment.upcommingMoveDirection = Quaternion.Euler(0, angle, 0) * _playerSegment.moveDirection;
         _isTurning = true;
