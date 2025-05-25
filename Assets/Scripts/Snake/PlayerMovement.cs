@@ -128,10 +128,11 @@ public class PlayerMovement : MonoBehaviour
         if (_playerSegment.moveDirection == Vector3.zero) return;
 
         var targetRotation = Quaternion.LookRotation(_playerSegment.moveDirection);
+        float rotationSpeed = Mathf.Clamp(_moveSpeed * 2.5f, 3f, 10f);
         _playerSegment.transform.rotation = Quaternion.Slerp(
             _playerSegment.transform.rotation,
             targetRotation,
-            Time.deltaTime * _moveSpeed * 2.5f
+            Time.deltaTime * rotationSpeed
         );
     }
 }
