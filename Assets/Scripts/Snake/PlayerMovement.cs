@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_isTurning) return;
 
-        var angleAbsoluteValue = 90f;
+        var angleAbsoluteValue = 60f;
         var angle = movementType switch
         {
             SnakeMovementType.TurnLeft => angleAbsoluteValue * -1,
