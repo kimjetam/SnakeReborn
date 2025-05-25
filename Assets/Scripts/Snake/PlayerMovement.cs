@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private bool _isMovementCoroutineInProgress = false;
     private bool _isTurning = false;
     private bool _isFrozen = false;
+    private bool _isHalfStep = false;
 
     public event Action OnSnakeMovementStarted; // Event for head movement
     public event Action<Vector3, float> OnSnakeMovementUpdated; // Event for head movement
@@ -92,7 +93,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _isMovementCoroutineInProgress = true;
 
-        if (VectorHelper.IsOnGrid(_playerSegment.transform.position))
+        if (Vector3.Distance(_playerSegment.transform.position, _playerSegment.targetPosition) < 0.001f  && !_isHalfStep)
         {
             _playerSegment.moveDirection = _playerSegment.upcommingMoveDirection;
         }
@@ -120,6 +121,7 @@ public class PlayerMovement : MonoBehaviour
         _playerSegment.transform.position = _playerSegment.targetPosition;
         OnSnakeMovementCompleted?.Invoke();
 
+        _isHalfStep = !_isHalfStep; // Toggle half step for next movement
         _isTurning = false;
         _isMovementCoroutineInProgress = false;
     }

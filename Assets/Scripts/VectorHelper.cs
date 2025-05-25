@@ -6,9 +6,4 @@ public static class VectorHelper
     {
         return Vector3.Cross(B - A, C - A).sqrMagnitude < epsilon;
     }
-
-    public static bool IsOnGrid(Vector3 position)
-    {
-        return Mathf.Round(position.x * 2) % 2 == 0 && Mathf.Round(position.z * 2) % 2 == 0;
-    }
 }
