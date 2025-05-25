@@ -12,6 +12,7 @@ public class SnakeManager : MonoBehaviour
     public float gridHalfSize = 0.5f;
     public float snakeWidthRadius = 0.15f;
     public int initialSnakeLength = 5;
+    public TurnAngle turnAngle = TurnAngle.Turn90;
     [HideInInspector]
     public GameObject headNeck;
     [HideInInspector]
@@ -38,10 +39,10 @@ public class SnakeManager : MonoBehaviour
         InitSnakeBody();
 
         var playerMovement = GetComponent<PlayerMovement>();
-        playerMovement.Initialize(headNeck.GetComponent<SnakeSegment>(), gridHalfSize, moveSpeed);
+        playerMovement.Initialize(headNeck.GetComponent<SnakeSegment>(), gridHalfSize, moveSpeed, turnAngle);
 
         var bodyMovement = GetComponent<BodyMovement>();
-        bodyMovement.Initialize(snakeSegments.Select(x => x.GetComponent<SnakeSegment>()).ToList(), gridHalfSize, headNeck.GetComponent<SnakeSegment>());
+        bodyMovement.Initialize(snakeSegments.Select(x => x.GetComponent<SnakeSegment>()).ToList(), gridHalfSize, headNeck.GetComponent<SnakeSegment>(), turnAngle);
 
         if (showDebugSegments)
         {

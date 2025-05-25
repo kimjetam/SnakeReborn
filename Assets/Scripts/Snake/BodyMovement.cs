@@ -11,12 +11,14 @@ public class BodyMovement : MonoBehaviour
     // Cache frequently used variables
     private Vector3 _newPosition;
     private Vector3 _rotationDirection;
+    private TurnAngle _turnAngle;
 
-    public void Initialize(List<SnakeSegment> bodySegments, float gridHalfSize, SnakeSegment playerSegment)
+    public void Initialize(List<SnakeSegment> bodySegments, float gridHalfSize, SnakeSegment playerSegment, TurnAngle turnAngle)
     {
         _bodySegments = bodySegments;
         _gridHalfSize = gridHalfSize;
         _playerSegment = playerSegment;
+        _turnAngle = turnAngle;
     }
 
     private void OnEnable()
@@ -96,25 +98,35 @@ public class BodyMovement : MonoBehaviour
 
         if (!segment.halfTurnDone)
         {
-            //segment.turnCenterPosition = segment.startPosition + (prevSegment.targetPosition - segment.targetPosition);
-            //segment.turnStartPosition = segment.startPosition;
+            switch (_turnAngle)
+            {
+                case TurnAngle.Turn60:
 
-            //var midPositionDirection = (segment.startPosition - segment.turnCenterPosition) + (prevSegment.targetPosition - segment.turnCenterPosition);
-            //segment.turnTargetPosition = segment.turnCenterPosition + midPositionDirection.normalized * _gridHalfSize;
+                    var a = new Vector2(segment.startPosition.x, segment.startPosition.z);
+                    var b = new Vector2(segment.targetPosition.x, segment.targetPosition.z);
+                    var c = new Vector2(prevSegment.targetPosition.x, prevSegment.targetPosition.z);
+                    var asd = VectorHelper.TryGetCircleIntersectionBelow(a, c, b, out var intersectionPoint2D);
 
-            var a = new Vector2(segment.startPosition.x, segment.startPosition.z);
-            var b = new Vector2(segment.targetPosition.x, segment.targetPosition.z);
-            var c = new Vector2(prevSegment.targetPosition.x, prevSegment.targetPosition.z);
-            var asd = VectorHelper.TryGetCircleIntersectionBelow(a, c, b, out var intersectionPoint2D);
+                    var intersectionPoint3D = new Vector3(intersectionPoint2D.x, segment.startPosition.y, intersectionPoint2D.y);
 
-            var intersectionPoint3D = new Vector3(intersectionPoint2D.x, segment.startPosition.y, intersectionPoint2D.y);
+                    segment.turnCenterPosition = intersectionPoint3D;
+                    segment.turnStartPosition = segment.startPosition;
+                    float radius = Vector3.Distance(new Vector3(a.x, segment.startPosition.y, a.y), intersectionPoint3D);
+                    var qwe = VectorHelper.TryGetClosestLineCircleIntersection(new Vector3(b.x, segment.startPosition.y, b.y), segment.turnCenterPosition, segment.turnCenterPosition, radius, out var midPoint);
 
-            segment.turnCenterPosition = intersectionPoint3D;
-            segment.turnStartPosition = segment.startPosition;
-            float radius = Vector3.Distance(new Vector3(a.x, segment.startPosition.y, a.y), intersectionPoint3D);
-            var qwe = VectorHelper.TryGetClosestLineCircleIntersection(new Vector3(b.x, segment.startPosition.y, b.y), segment.turnCenterPosition, segment.turnCenterPosition, radius, out var midPoint);
+                    segment.turnTargetPosition = new Vector3(midPoint.x, segment.startPosition.y, midPoint.z);
 
-            segment.turnTargetPosition = new Vector3(midPoint.x, segment.startPosition.y, midPoint.z);
+                    break;
+                case TurnAngle.Turn90:
+
+                    segment.turnCenterPosition = segment.startPosition + (prevSegment.targetPosition - segment.targetPosition);
+                    segment.turnStartPosition = segment.startPosition;
+
+                    var midPositionDirection = (segment.startPosition - segment.turnCenterPosition) + (prevSegment.targetPosition - segment.turnCenterPosition);
+                    segment.turnTargetPosition = segment.turnCenterPosition + midPositionDirection.normalized * _gridHalfSize;
+
+                    break;
+            }
         }
         else
         {
