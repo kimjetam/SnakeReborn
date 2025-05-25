@@ -47,16 +47,13 @@ public class BodyMovement : MonoBehaviour
             var segment = _bodySegments[i];
             var prevSegment = i == 0 ? _playerSegment : _bodySegments[i - 1];
 
-            segment.startPosition = segment.transform.position;
-            segment.moveDirection = prevSegment.moveDirection;
-
-            if(prevSegment.isTurning)
+            if (segment.startPosition == Vector3.zero)
             {
-                segment.targetPosition = VectorHelper.RoundToHalf(prevSegment.startPosition);
-            } else
-            {
-                segment.targetPosition = prevSegment.startPosition;
+                segment.startPosition = segment.transform.position;
             }
+
+            segment.moveDirection = prevSegment.moveDirection;
+            segment.targetPosition = prevSegment.startPosition;
 
             if (!VectorHelper.ArePointsCollinear(prevSegment.targetPosition, segment.targetPosition, segment.startPosition) || segment.halfTurnDone)
             {
@@ -134,6 +131,8 @@ public class BodyMovement : MonoBehaviour
             {
                 segment.transform.position = segment.targetPosition;
             }
+            // Set start position for the next movement round
+            segment.startPosition = segment.targetPosition;
         }
     }
 }

@@ -11,13 +11,4 @@ public static class VectorHelper
     {
         return Mathf.Round(position.x * 2) % 2 == 0 && Mathf.Round(position.z * 2) % 2 == 0;
     }
-
-    public static Vector3 RoundToHalf(Vector3 original)
-    {
-        return new Vector3(
-            Mathf.Round(original.x * 2) / 2,
-            original.y,
-            Mathf.Round(original.z * 2) / 2
-        );
-    }
 }
