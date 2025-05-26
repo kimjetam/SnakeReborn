@@ -11,14 +11,14 @@ public class BodyMovement : MonoBehaviour
     // Cache frequently used variables
     private Vector3 _newPosition;
     private Vector3 _rotationDirection;
-    private TurnAngle _turnAngle;
+    private GridType _gridType;
 
-    public void Initialize(List<SnakeSegment> bodySegments, float gridHalfSize, SnakeSegment playerSegment, TurnAngle turnAngle)
+    public void Initialize(List<SnakeSegment> bodySegments, float gridHalfSize, SnakeSegment playerSegment, GridType gridType)
     {
         _bodySegments = bodySegments;
         _gridHalfSize = gridHalfSize;
         _playerSegment = playerSegment;
-        _turnAngle = turnAngle;
+        _gridType = gridType;
     }
 
     private void OnEnable()
@@ -98,9 +98,9 @@ public class BodyMovement : MonoBehaviour
 
         if (!segment.halfTurnDone)
         {
-            switch (_turnAngle)
+            switch (_gridType)
             {
-                case TurnAngle.Turn60:
+                case GridType.Hexagonal:
 
                     if(!VectorHelper.TryGetCircleIntersectionBelow(segment.startPosition, segment.targetPosition, prevSegment.targetPosition, out var turnCenterPosition))
                     {
@@ -121,7 +121,7 @@ public class BodyMovement : MonoBehaviour
                     segment.turnTargetPosition = turnMiddlePosition;
 
                     break;
-                case TurnAngle.Turn90:
+                case GridType.Square:
 
                     segment.turnCenterPosition = segment.startPosition + (prevSegment.targetPosition - segment.targetPosition);
                     segment.turnStartPosition = segment.startPosition;

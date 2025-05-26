@@ -12,18 +12,18 @@ public class PlayerMovement : MonoBehaviour
     private bool _isTurning = false;
     private bool _isFrozen = false;
     private bool _isHalfStep = false;
-    private TurnAngle _turnAngle;
+    private GridType _gridType;
 
     public event Action OnSnakeMovementStarted; // Event for head movement
     public event Action<Vector3, float> OnSnakeMovementUpdated; // Event for head movement
     public event Action OnSnakeMovementCompleted; // Event for head movement
 
-    public void Initialize(SnakeSegment playerSegment, float gridHalfSize, float moveSpeed, TurnAngle turnAngle)
+    public void Initialize(SnakeSegment playerSegment, float gridHalfSize, float moveSpeed, GridType gridType)
     {
         _playerSegment = playerSegment;
         _gridHalfSize = gridHalfSize;
         _moveSpeed = moveSpeed;
-        _turnAngle = turnAngle;
+        _gridType = gridType;
     }
 
     private void OnEnable()
@@ -62,10 +62,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_isTurning) return;
 
+        var absoluteAngle = (byte) _gridType;
         var angle = movementType switch
         {
-            SnakeMovementType.TurnLeft => (byte) _turnAngle * -1,
-            SnakeMovementType.TurnRight => (byte) _turnAngle,
+            SnakeMovementType.TurnLeft => absoluteAngle * -1,
+            SnakeMovementType.TurnRight => absoluteAngle,
             _ => throw new InvalidOperationException($"{movementType} is not a valid turn type")
         }; ;
 
