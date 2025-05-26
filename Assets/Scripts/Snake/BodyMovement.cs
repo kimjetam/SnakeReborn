@@ -102,19 +102,23 @@ public class BodyMovement : MonoBehaviour
             {
                 case TurnAngle.Turn60:
 
-                    var a = new Vector2(segment.startPosition.x, segment.startPosition.z);
-                    var b = new Vector2(segment.targetPosition.x, segment.targetPosition.z);
-                    var c = new Vector2(prevSegment.targetPosition.x, prevSegment.targetPosition.z);
-                    var asd = VectorHelper.TryGetCircleIntersectionBelow(a, c, b, out var intersectionPoint2D);
+                    if(!VectorHelper.TryGetCircleIntersectionBelow(segment.startPosition, segment.targetPosition, prevSegment.targetPosition, out var turnCenterPosition))
+                    {
+                        Debug.Log("No valid circle-circle intersection.");
+                        return;
+                    }
 
-                    var intersectionPoint3D = new Vector3(intersectionPoint2D.x, segment.startPosition.y, intersectionPoint2D.y);
-
-                    segment.turnCenterPosition = intersectionPoint3D;
+                    segment.turnCenterPosition = turnCenterPosition;
                     segment.turnStartPosition = segment.startPosition;
-                    float radius = Vector3.Distance(new Vector3(a.x, segment.startPosition.y, a.y), intersectionPoint3D);
-                    var qwe = VectorHelper.TryGetClosestLineCircleIntersection(new Vector3(b.x, segment.startPosition.y, b.y), segment.turnCenterPosition, segment.turnCenterPosition, radius, out var midPoint);
 
-                    segment.turnTargetPosition = new Vector3(midPoint.x, segment.startPosition.y, midPoint.z);
+                    float radius = Vector3.Distance(segment.startPosition, turnCenterPosition);
+                    if(!VectorHelper.TryGetClosestLineCircleIntersection(segment.targetPosition, segment.turnCenterPosition, segment.turnCenterPosition, radius, out var turnMiddlePosition))
+                    {
+                        Debug.Log("No valid circle-line intersection.");
+                        return;
+                    }
+
+                    segment.turnTargetPosition = turnMiddlePosition;
 
                     break;
                 case TurnAngle.Turn90:
@@ -122,7 +126,7 @@ public class BodyMovement : MonoBehaviour
                     segment.turnCenterPosition = segment.startPosition + (prevSegment.targetPosition - segment.targetPosition);
                     segment.turnStartPosition = segment.startPosition;
 
-                    var midPositionDirection = (segment.startPosition - segment.turnCenterPosition) + (prevSegment.targetPosition - segment.turnCenterPosition);
+                    var midPositionDirection = segment.startPosition - segment.turnCenterPosition + (prevSegment.targetPosition - segment.turnCenterPosition);
                     segment.turnTargetPosition = segment.turnCenterPosition + midPositionDirection.normalized * _gridHalfSize;
 
                     break;

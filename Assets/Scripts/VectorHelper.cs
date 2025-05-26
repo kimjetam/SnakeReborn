@@ -7,14 +7,19 @@ public static class VectorHelper
         return Vector3.Cross(B - A, C - A).sqrMagnitude < epsilon;
     }
 
-    public static bool TryGetCircleIntersectionBelow(Vector2 A, Vector2 C, Vector2 B, out Vector2 result)
+    public static bool TryGetCircleIntersectionBelow(Vector3 A3, Vector3 B3, Vector3 C3, out Vector3 result)
     {
-        result = Vector2.zero;
+        result = Vector3.zero;
 
-        float radius = Vector2.Distance(A, C);
-        float d = Vector2.Distance(A, C);
+        // Project into XZ plane
+        Vector2 A = new Vector2(A3.x, A3.z);
+        Vector2 B = new Vector2(B3.x, B3.z);
+        Vector2 C = new Vector2(C3.x, C3.z);
 
-        if (d > 2 * radius || d == 0f)
+        float d = Vector2.Distance(A, C);      // distance between centers
+        float radius = d; // radius from A to B
+
+        if (d > 2f * radius || d == 0f)
             return false; // Circles too far apart or same center
 
         Vector2 mid = (A + C) * 0.5f;
@@ -26,27 +31,27 @@ public static class VectorHelper
         Vector2 p1 = mid + perp * h;
         Vector2 p2 = mid - perp * h;
 
-        // Calculate signed area / orientation function helper:
         float Orientation(Vector2 p, Vector2 q, Vector2 r)
         {
             return (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x);
         }
 
-        // Find orientation of triangle ABC
         float orientABC = Orientation(A, C, B);
-
-        // Find orientation of intersection points relative to AC
         float orientP1 = Orientation(A, C, p1);
         float orientP2 = Orientation(A, C, p2);
 
-        // Choose the point on the opposite side of B relative to AC
-        if (Mathf.Sign(orientP1) != Mathf.Sign(orientABC))
-            result = p1;
-        else if (Mathf.Sign(orientP2) != Mathf.Sign(orientABC))
-            result = p2;
-        else
-            // Both points are on the same side (should not happen if circles intersect properly)
-            result = p1;
+        Vector2 chosen2D = (Mathf.Sign(orientP1) != Mathf.Sign(orientABC)) ? p1 :
+                           (Mathf.Sign(orientP2) != Mathf.Sign(orientABC)) ? p2 :
+                           p1;
+
+        // Interpolate Y from A3 to C3 using projection factor t
+        Vector2 AC = C - A;
+        Vector2 AP = chosen2D - A;
+        float t = (AC.sqrMagnitude > 0f) ? Vector2.Dot(AP, AC) / AC.sqrMagnitude : 0f;
+        t = Mathf.Clamp01(t);
+
+        float y = Mathf.Lerp(A3.y, C3.y, t);
+        result = new Vector3(chosen2D.x, y, chosen2D.y);
 
         return true;
     }
@@ -78,7 +83,16 @@ public static class VectorHelper
         float t2 = (-b + sqrtDiscriminant) / (2 * a);
 
         // Find the closer t value (smaller positive t)
-        float chosenT = (Mathf.Abs(t1) < Mathf.Abs(t2)) ? t1 : t2;
+        float chosenT;
+        if (t1 >= 0 && (t1 <= t2 || t2 < 0))
+            chosenT = t1;
+        else if (t2 >= 0)
+            chosenT = t2;
+        else
+        {
+            intersection3D = Vector3.zero;
+            return false; // both behind
+        }
 
         Vector2 intersection2D = linePoint + dir * chosenT;
 

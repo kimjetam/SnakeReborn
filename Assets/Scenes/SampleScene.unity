@@ -41284,7 +41284,7 @@ MonoBehaviour:
   gridHalfSize: 0.5
   snakeWidthRadius: 0.2
   initialSnakeLength: 20
-  turnAngle: 60
+  turnAngle: 90
   headNeck: {fileID: 0}
   headTip: {fileID: 0}
   headMiddle: {fileID: 0}
